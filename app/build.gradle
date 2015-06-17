@@ -1,0 +1,30 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 22
+    buildToolsVersion "22.0.1"
+
+    defaultConfig {
+        applicationId "com.gabilamnanodegree.spotifystreaming"
+        minSdkVersion 15
+        targetSdkVersion 22
+        versionCode 1
+        versionName "1.0"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile 'com.android.support:appcompat-v7:22.1.1' // Compatibility library
+    compile 'com.android.support:design:22.2.0' // Design compatibility library
+    compile 'com.squareup.picasso:picasso:2.5.2' // Used for image loading / caching
+    compile 'com.squareup.retrofit:retrofit:1.9.0'  // Used to create RESTFul requests
+    compile 'com.squareup.okhttp:okhttp:2.2.0'  // Used to create HTTP connections
+    compile 'jp.co.cyberagent.android.gpuimage:gpuimage-library:1.2.3' // Library used to apply some cool effects to the images
+}

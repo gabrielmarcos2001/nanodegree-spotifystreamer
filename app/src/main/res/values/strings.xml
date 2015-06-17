@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">SpotifyStreaming</string>
+
+    <string name="follower">Follower</string>
+    <string name="followers">Followers</string>
+    <string name="search_artis">Search Artist</string>
+    <string name="hint_artist_name">Artist Name</string>
+    <string name="loading">LOADING</string>
+    <string name="top_tracks_uppercase">TOP 10 TRACKS</string>
+
+    <!-- Error Messages -->
+    <string name="error_empty_query_artist">PLEASE ENTER AN ARTIST NAME</string>
+    <string name="error_empty_list_artist">SORRY NO ARTIST WERE FOUND:PLEASE TRY WITH A DIFFERENT NAME</string>
+    <string name="error_empty_list_track">SORRY NO ALBUMS WERE FOUND:PLEASE TRY WITH A DIFFERENT ARTIST</string>
+    <string name="error_only_available_in_stage_2">Sorry, this will be available in Stage 2</string>
+
+</resources>

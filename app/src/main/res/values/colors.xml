@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Flat colors -->
+    <color name = "flat_black">#1F2021</color>
+    <color name = "flat_black_clear">#333436</color>
+    <color name = "green_sea">#16A085</color>
+    <color name = "emerland">#2ECC71</color>
+    <color name = "nephritis">#27AE60</color>
+    <color name = "peter_river">#3498DB</color>
+    <color name = "belize_hole">#2980B9</color>
+    <color name = "amethyst">#9B59B6</color>
+    <color name = "wisteria">#8E44AD</color>
+    <color name = "wet_asphalt">#34495E</color>
+    <color name = "midnight_blue">#2C3E50</color>
+    <color name = "midnight_blue_clear">#394f65</color>
+    <color name = "midnight_blue_dark">#243241</color>
+    <color name = "night_shade">#2C3E50</color>
+    <color name = "sun_flower">#F1C40F</color>
+    <color name = "orange">#F39C12</color>
+    <color name = "carrot">#E67E22</color>
+    <color name = "pumplin">#D35400</color>
+    <color name = "alizarin">#E74C3C</color>
+    <color name = "strong_red">#e6462c</color>
+    <color name = "pomegranate">#C0392B</color>
+    <color name = "clouds">#ECF0F1</color>
+    <color name = "silver_flat">#BDC3C7</color>
+    <color name = "concrete">#95A5A6</color>
+    <color name = "asbestos">#7F8C8D</color>
+
+    <!-- App palette -->
+    <color name="purple_50">#F3E5F5</color>
+    <color name="purple_100">#E1BEE7</color>
+    <color name="purple_200">#CE93D8</color>
+    <color name="purple_300">#BA68C8</color>
+    <color name="purple_400">#AB47BC</color>
+    <color name="purple_500">#9C27B0</color>
+    <color name="purple_600">#8E24AA</color>
+    <color name="purple_700">#7B1FA2</color>
+    <color name="purple_800">#6A1B9A</color>
+    <color name="purple_900">#4A148C</color>
+    <color name="purple_1000">#300d5b</color>
+    <color name="purple_a_100">#EA80FC</color>
+    <color name="purple_a_200">#E040FB</color>
+    <color name="purple_a_400">#D500F9</color>
+    <color name="purple_a_700">#AA00FF</color>
+
+    <color name="green_bright">#7bb801</color>
+
+</resources>

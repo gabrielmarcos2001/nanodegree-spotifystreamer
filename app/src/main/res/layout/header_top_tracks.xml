@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/header_top_tracks_height">
+
+    <!-- Background Image View -->
+    <ImageView
+        android:id="@+id/background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/backround"
+        android:scaleType="centerCrop"
+        />
+
+    <!-- Overlay view to display a nice effect when scrolling -->
+    <View
+        android:id="@+id/overlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/purple_900"
+        android:alpha="0"/>
+
+    <!-- Artist Image -->
+    <ImageView
+        android:id="@+id/artist_image"
+        android:layout_width="@dimen/top_tracks_artist_size"
+        android:layout_height="@dimen/top_tracks_artist_size"
+        android:src="@drawable/artist_default"
+        android:scaleType="centerCrop"
+        android:layout_centerInParent="true"/>
+
+    <TextView
+        android:id="@+id/artist_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:maxLines="2"
+        android:textColor="@color/clouds"
+        android:gravity="center"
+        android:layout_below="@+id/artist_image"
+        android:textSize="@dimen/sp20"
+        android:layout_marginTop="@dimen/dp20"/>
+
+</RelativeLayout>

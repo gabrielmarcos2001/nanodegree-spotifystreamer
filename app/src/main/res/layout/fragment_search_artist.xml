@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- Swipe to Refresh Container -->
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/refresh_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <!-- ListView to display Artists Results -->
+        <ListView
+            android:id="@+id/artists_list_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+    </android.support.v4.widget.SwipeRefreshLayout>
+
+    <!-- Header View -->
+    <com.gabilamnanodegree.spotifystreaming.ui.components.ViewSearchArtistHeader
+        android:id="@+id/header"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/header_search_artist_height"/>
+
+    <!-- Nice shadow -->
+    <View
+        android:id="@+id/elevation_shadow"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/shadow_height"
+        android:layout_below="@+id/header"
+        android:background="@drawable/shadow"/>
+
+    <!-- Empty View -->
+    <com.gabilamnanodegree.spotifystreaming.ui.components.ViewEmptyList
+        android:id="@+id/empty_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/header"/>
+
+</RelativeLayout>

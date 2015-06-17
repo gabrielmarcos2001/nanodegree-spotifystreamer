@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/list_items_padding">
+
+    <!-- Artist thumb Image -->
+    <ImageView
+        android:id="@+id/thumb_image"
+        android:layout_width="@dimen/artist_image_size"
+        android:layout_height="@dimen/artist_image_size"
+        android:layout_centerVertical="true"
+        android:scaleType="centerCrop"
+        android:src="@drawable/artist_default"/>
+
+    <!-- Artist Data -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/thumb_image"
+        android:layout_marginLeft="@dimen/list_items_text_margin"
+        android:layout_centerVertical="true"
+        android:orientation="vertical">
+
+        <!-- Artist Name -->
+        <TextView
+            android:id="@+id/artist_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/purple_500"/>
+
+        <!-- Followers value -->
+        <TextView
+            android:id="@+id/followers"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/sp12"
+            android:textColor="@color/asbestos"/>
+
+    </LinearLayout>
+
+</RelativeLayout>

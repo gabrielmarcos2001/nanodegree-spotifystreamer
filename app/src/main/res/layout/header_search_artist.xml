@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/header_search_artist_height"
+    android:clipChildren="false">
+
+    <!-- Background Image View -->
+    <ImageView
+        android:id="@+id/background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/backround"
+        android:scaleType="centerCrop"/>
+
+    <!-- Overlay view to add a nice effect when scrolling -->
+    <View
+        android:id="@+id/overlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/purple_900"
+        android:alpha="0"/>
+
+    <!-- Artist name edit text - contained into a text input
+    layout to display the hint text over it -->
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="@dimen/dp10"
+        android:layout_marginRight="@dimen/dp20"
+        android:layout_marginLeft="@dimen/dp72">
+
+        <EditText
+            android:id="@+id/artist_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/clouds"
+            android:hint="@string/hint_artist_name"/>
+
+    </android.support.design.widget.TextInputLayout>
+
+</RelativeLayout>

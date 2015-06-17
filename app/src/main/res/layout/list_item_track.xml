@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/list_items_padding">
+
+    <!-- Album thumb Image -->
+    <ImageView
+        android:id="@+id/thumb_image"
+        android:layout_width="@dimen/artist_image_size"
+        android:layout_height="@dimen/artist_image_size"
+        android:src="@drawable/album_default"
+        android:layout_centerVertical="true"/>
+
+    <!-- Track Data Container -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/thumb_image"
+        android:layout_marginLeft="@dimen/list_items_text_margin"
+        android:layout_centerVertical="true"
+        android:orientation="vertical">
+
+        <!-- Track Name -->
+        <TextView
+            android:id="@+id/track_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/purple_500"/>
+
+        <!-- Album Name -->
+        <TextView
+            android:id="@+id/album_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:textColor="@color/asbestos"/>
+
+    </LinearLayout>
+
+</RelativeLayout>
