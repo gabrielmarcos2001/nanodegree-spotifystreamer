@@ -2,6 +2,14 @@
 
     <!-- Base application theme. -->
 
+    <style name="DialogAnimation">
+        <item name="android:windowEnterAnimation">@anim/dialog_show</item>
+        <item name="android:windowExitAnimation">@anim/dialog_dismiss</item>
+    </style>
+
+    <style name="Theme.SpotifyStreamer.NoActionBar.Dialog" parent="AppThemeNoActionBar">
+    </style>
+
     <style name="AppThemeNoActionBar" parent="Theme.AppCompat.Light.NoActionBar">
 
         <!-- colorPrimary is used for the default action bar background -->

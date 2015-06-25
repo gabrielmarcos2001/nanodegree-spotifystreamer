@@ -1,5 +1,6 @@
 package com.gabilamnanodegree.spotifystreaming.ui.presenter.topTracks;
 
+import com.gabilamnanodegree.spotifystreaming.model.entities.AppArtist;
 import com.gabilamnanodegree.spotifystreaming.model.entities.AppTrack;
 import com.gabilamnanodegree.spotifystreaming.ui.view.ViewTopTracks;
 import com.gabilamnanodegree.spotifystreaming.ui.presenter.Presenter;
@@ -17,8 +18,8 @@ public interface PresenterTopTracks extends Presenter<ViewTopTracks> {
 
     /**
      * A Track was selected by the user
-     * @param track
+     * @param position
      */
-    void trackSelected(AppTrack track);
+    void trackSelected(int position, AppArtist artist);
 
 }

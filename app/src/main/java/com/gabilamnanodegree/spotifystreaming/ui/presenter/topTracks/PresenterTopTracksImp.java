@@ -3,12 +3,17 @@ package com.gabilamnanodegree.spotifystreaming.ui.presenter.topTracks;
 import android.app.Activity;
 import android.content.Context;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.DialogFragment;
 import android.view.View;
 
 import com.gabilamnanodegree.spotifystreaming.R;
+import com.gabilamnanodegree.spotifystreaming.model.entities.AppArtist;
 import com.gabilamnanodegree.spotifystreaming.model.entities.AppTrack;
 import com.gabilamnanodegree.spotifystreaming.model.interactors.artist.GetTopTracksForArtist;
 import com.gabilamnanodegree.spotifystreaming.model.repository.RepositoryTracks;
+import com.gabilamnanodegree.spotifystreaming.ui.fragment.FragmentMusicPlayer;
+import com.gabilamnanodegree.spotifystreaming.ui.presenter.player.PresenterPlayer;
+import com.gabilamnanodegree.spotifystreaming.ui.presenter.player.PresenterPlayerImp;
 import com.gabilamnanodegree.spotifystreaming.ui.view.ViewTopTracks;
 import com.gabilamnanodegree.spotifystreaming.ui.presenter.PresenterBase;
 
@@ -25,6 +30,7 @@ public class PresenterTopTracksImp extends PresenterBase implements PresenterTop
 
     private ViewTopTracks mView;
     private GetTopTracksForArtist mGetTopTracksInteractor;
+    private List<AppTrack> mTracks;
 
     /**
      * Constructor
@@ -55,10 +61,17 @@ public class PresenterTopTracksImp extends PresenterBase implements PresenterTop
     }
 
     @Override
-    public void trackSelected(AppTrack track) {
+    public void trackSelected(int position, AppArtist artist) {
 
-        View rootView = ((Activity)mContext).getWindow().getDecorView().findViewById(android.R.id.content);
-        Snackbar.make(rootView,mContext.getString(R.string.error_only_available_in_stage_2),Snackbar.LENGTH_SHORT).show();
+        FragmentMusicPlayer musicPlayerFragment = FragmentMusicPlayer.newInstance();
+
+        // Sends the Data to the player fragment
+        musicPlayerFragment.setArtist(artist);
+        musicPlayerFragment.setmTracks(mTracks);
+        musicPlayerFragment.setmInitialTrackIndex(position);
+
+        mView.openMusicPlayer(musicPlayerFragment);
+
     }
 
     @Override
@@ -68,6 +81,8 @@ public class PresenterTopTracksImp extends PresenterBase implements PresenterTop
 
     @Override
     public void onTopTracksFetched(List<AppTrack> appTracks) {
+
+        this.mTracks = appTracks;
 
         if (mView == null) return;
 

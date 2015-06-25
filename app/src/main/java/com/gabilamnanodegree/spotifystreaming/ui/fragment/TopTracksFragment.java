@@ -3,7 +3,9 @@ package com.gabilamnanodegree.spotifystreaming.ui.fragment;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
@@ -26,6 +28,7 @@ import com.gabilamnanodegree.spotifystreaming.ui.adapter.TracksAdapter;
 import com.gabilamnanodegree.spotifystreaming.ui.components.ViewEmptyList;
 import com.gabilamnanodegree.spotifystreaming.ui.components.ViewSearchArtistHeader;
 import com.gabilamnanodegree.spotifystreaming.ui.components.ViewTopTracksHeader;
+import com.gabilamnanodegree.spotifystreaming.ui.presenter.player.PresenterPlayerImp;
 import com.gabilamnanodegree.spotifystreaming.ui.presenter.topTracks.PresenterTopTracks;
 import com.gabilamnanodegree.spotifystreaming.ui.presenter.topTracks.PresenterTopTracksImp;
 import com.gabilamnanodegree.spotifystreaming.ui.view.ViewTopTracks;
@@ -53,6 +56,7 @@ public class TopTracksFragment extends FragmentBaseListWithHeader implements Vie
 
     private AppArtist mArtist; // Artist Data
     private TextView mTitleTextView; // Title TextView
+
 
     public static Fragment newInstance() {
         return new TopTracksFragment();
@@ -274,8 +278,16 @@ public class TopTracksFragment extends FragmentBaseListWithHeader implements Vie
 
         // We do a search for position gt 0 because we have a header view on the list
         if (position > 0) {
-            mPresenter.trackSelected((AppTrack)mAdapter.getItem(position-1));
+            mPresenter.trackSelected(position-1, mArtist);
         }
+    }
+
+    @Override
+    public void openMusicPlayer(DialogFragment fragment) {
+
+        // The device is using a large layout, so show the fragment as a dialog
+        fragment.show(getChildFragmentManager(), "music_player");
+
     }
 
     @Override

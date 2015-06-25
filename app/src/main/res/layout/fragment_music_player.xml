@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/clouds">
+
+    <LinearLayout android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_below="@+id/toolbar"
+        android:weightSum="1">
+
+        <!-- Header View -->
+        <com.gabilamnanodegree.spotifystreaming.ui.components.ViewMusicPlayerHeader
+            android:id="@+id/header"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="0.4"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="0.6">
+
+            <!-- Nice Shadow -->
+            <View
+                android:id="@+id/elevation_shadow"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/shadow_height"
+                android:background="@drawable/shadow"/>
+
+            <!-- Main Play/Pause button -->
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/play_pause_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:src="@android:drawable/ic_media_play"/>
+
+            <!-- Next Track -->
+            <ImageButton
+                android:id="@+id/next_track"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@+id/play_pause_button"
+                android:layout_centerVertical="true"
+                android:src="@android:drawable/ic_media_next"/>
+
+            <!-- Prev track -->
+            <ImageButton
+                android:id="@+id/previous_track"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@+id/play_pause_button"
+                android:src="@android:drawable/ic_media_previous"/>
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+
+    <!-- Custom Toolbar for displaying back navigation -->
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?actionBarSize"
+        android:background="@color/purple_500"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        android:popupTheme="@style/ThemeOverlay.AppCompat.Dark"
+        app:contentInsetLeft="0dp"
+        app:contentInsetStart="0dp">
+
+        <!-- Toolbar data container -->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <!-- Share Button -->
+            <ImageButton
+                android:id="@+id/share_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="?android:actionButtonStyle"
+                android:layout_alignParentRight="true"
+                android:src="@android:drawable/ic_menu_share"
+                />
+
+            <!-- Cancel Button -->
+            <ImageButton
+                android:id="@+id/close_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="?android:actionButtonStyle"
+                android:src="@android:drawable/ic_menu_close_clear_cancel"
+                />
+
+        </RelativeLayout>
+
+    </android.support.v7.widget.Toolbar>
+
+</RelativeLayout>

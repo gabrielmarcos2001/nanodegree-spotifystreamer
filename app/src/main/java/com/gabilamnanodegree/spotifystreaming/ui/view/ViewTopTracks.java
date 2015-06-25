@@ -1,5 +1,7 @@
 package com.gabilamnanodegree.spotifystreaming.ui.view;
 
+import android.support.v4.app.DialogFragment;
+
 import com.gabilamnanodegree.spotifystreaming.model.entities.AppTrack;
 import com.gabilamnanodegree.spotifystreaming.ui.ViewBase;
 
@@ -15,4 +17,5 @@ public interface ViewTopTracks extends ViewBase {
     void showErrorMessage(String error);
     void showLoader();
     void hideLoader();
+    void openMusicPlayer(DialogFragment fragment);
 }

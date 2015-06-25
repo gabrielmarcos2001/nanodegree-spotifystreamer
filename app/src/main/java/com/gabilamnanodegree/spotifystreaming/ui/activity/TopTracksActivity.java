@@ -56,6 +56,7 @@ public class TopTracksActivity extends BaseActivity{
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
                 .replace(R.id.container, topTracksFragment, FRAGMENT_TAG).commit();
+
     }
 
     @Override
