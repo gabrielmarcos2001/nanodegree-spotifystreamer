@@ -229,7 +229,8 @@ public class TopTracksFragment extends FragmentBaseListWithHeader implements Vie
 
     @Override
     public void refreshTriggered() {
-        mPresenter.searchTopTracksByArtist(mArtist.getmId());
+
+        if (mArtist != null) mPresenter.searchTopTracksByArtist(mArtist.getmId());
     }
 
     @Override

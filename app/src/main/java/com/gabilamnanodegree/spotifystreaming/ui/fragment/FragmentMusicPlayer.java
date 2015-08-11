@@ -2,6 +2,7 @@ package com.gabilamnanodegree.spotifystreaming.ui.fragment;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
@@ -11,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 
 import com.gabilamnanodegree.spotifystreaming.R;
@@ -32,15 +34,26 @@ import java.util.List;
  */
 public class FragmentMusicPlayer extends DialogFragment implements ViewPlayer, View.OnClickListener, ViewMusicPlayerHeader.HeaderActionsInterface{
 
+    private enum PlayerState {
+        STOPEED,
+        PLAYING,
+        PAUSED
+    }
+
+    private PlayerState mState; // Stores the current state of the view
+
     private static PresenterPlayer mPresenter;
 
-    private AppArtist mSelectedArtist;
-    private List<AppTrack> mTracks;
-    private int mSelectedTrackIndex;
+    private AppArtist mSelectedArtist; // Current selected artist
+    private List<AppTrack> mTracks; // List of the artist top tracks
+    private int mSelectedTrackIndex; // Current selected track index
 
     private ViewMusicPlayerHeader mHeader;
     private boolean mMusicPlaying = false;
     private boolean mIsLargeLayout = false;
+    private boolean mPaused = false;
+
+    private FloatingActionButton mPlayPauseButton;
 
     public static FragmentMusicPlayer newInstance() {
         return new FragmentMusicPlayer();
@@ -73,20 +86,19 @@ public class FragmentMusicPlayer extends DialogFragment implements ViewPlayer, V
         mHeader = (ViewMusicPlayerHeader)rootView.findViewById(R.id.header);
         mHeader.setmInterface(this);
 
-        FloatingActionButton pausePlayButton = (FloatingActionButton)rootView.findViewById(R.id.play_pause_button);
+        mPlayPauseButton = (FloatingActionButton)rootView.findViewById(R.id.play_pause_button);
         ImageButton prevButton = (ImageButton)rootView.findViewById(R.id.previous_track);
         ImageButton nextButton = (ImageButton)rootView.findViewById(R.id.next_track);
 
         rootView.findViewById(R.id.close_button).setOnClickListener(this);
         rootView.findViewById(R.id.share_button).setOnClickListener(this);
 
-        pausePlayButton.setOnClickListener(this);
+        mPlayPauseButton.setOnClickListener(this);
         prevButton.setOnClickListener(this);
         nextButton.setOnClickListener(this);
 
         if (mPresenter == null) {
             mPresenter = new PresenterPlayerImp(getActivity());
-            mPresenter.setData(mTracks,mSelectedTrackIndex, mSelectedArtist);
         }else {
             mPresenter.setContext(getActivity());
         }
@@ -106,11 +118,24 @@ public class FragmentMusicPlayer extends DialogFragment implements ViewPlayer, V
             }
 
             mTracks = savedTracks;
-            mPresenter.setData(mTracks,mSelectedTrackIndex, mSelectedArtist);
+
         }
 
-
         mPresenter.setView(this);
+
+        // Checks if there is a song a song playing at moment of opening the player
+        if (mPresenter.getCurrentPlayingTrack() != null) {
+
+            // If the playing song is the same than the selected song by the user then we init the view
+            // in Playing Mode
+            if (mPresenter.getCurrentPlayingTrack().getmTrackName().equals(mTracks.get(mSelectedTrackIndex))) {
+                initInPlayingMode();
+            }else {
+                initInStopMode();
+            }
+        }else {
+            initInStopMode();
+        }
 
         updateViewData();
 
@@ -156,6 +181,10 @@ public class FragmentMusicPlayer extends DialogFragment implements ViewPlayer, V
     public void onStop() {
             super.onStop();
         if (mPresenter != null) {
+
+            if (mState == PlayerState.PAUSED) {
+                // Stop the song
+            }
             mPresenter.setView(null);
         }
     }
@@ -181,19 +210,36 @@ public class FragmentMusicPlayer extends DialogFragment implements ViewPlayer, V
         switch (view.getId()) {
             case R.id.play_pause_button:
 
-                if (mMusicPlaying) {
-                    mPresenter.pauseClicked();
+                // If the music is playing the we pause the music
+                if (mState == PlayerState.PLAYING) {
+
+                    mPresenter.pauseCurrentTrack();
+
+                    // We update the current state to Paused
+                    mState = PlayerState.PAUSED;
+
                 }else {
-                    mPresenter.playClicked();
+
+                    // If the music is not playing we check if we are coming
+                    // from a paused state or we are playing a current song
+                    if (mState == PlayerState.PAUSED) {
+                        mPresenter.resumeCurrentTrack();
+                    }else {
+                        mPresenter.playTrack(mTracks.get(mSelectedTrackIndex));
+                    }
+
+                    // We update the current state to Playing
+                    mState = PlayerState.PLAYING;
+
                 }
                 break;
 
             case R.id.next_track:
-                mPresenter.nextClicked();
+                processNextClicked();
                 break;
 
             case R.id.previous_track:
-                mPresenter.prevClicked();
+                processPrevClicked();
                 break;
 
             case R.id.close_button:
@@ -201,9 +247,40 @@ public class FragmentMusicPlayer extends DialogFragment implements ViewPlayer, V
                 break;
 
             case R.id.share_button:
-                mPresenter.shareClicked();
+                mPresenter.shareTrack(mTracks.get(mSelectedTrackIndex));
                 break;
         }
+    }
+
+    /**
+     * Process the Next button clicked
+     */
+    private void processNextClicked() {
+
+        mSelectedTrackIndex ++;
+
+        if (mSelectedTrackIndex >= mTracks.size()) {
+            mSelectedTrackIndex = 0;
+        }
+
+        updateViewData();
+
+        mPresenter.playTrack(mTracks.get(mSelectedTrackIndex));
+    }
+
+    /**
+     * Process the previous button clicked
+     */
+    private void processPrevClicked() {
+
+        mSelectedTrackIndex --;
+        if (mSelectedTrackIndex < 0) {
+            mSelectedTrackIndex = mTracks.size()-1;
+        }
+
+        updateViewData();
+
+        mPresenter.playTrack(mTracks.get(mSelectedTrackIndex));
     }
 
     @Override
@@ -232,12 +309,6 @@ public class FragmentMusicPlayer extends DialogFragment implements ViewPlayer, V
     }
 
     @Override
-    public void selectTrackByIndex(int index) {
-        mSelectedTrackIndex = index;
-        updateViewData();
-    }
-
-    @Override
     public void updateProgress(int progress, String totalDuration, String currentDuration) {
 
         if (mHeader != null) {
@@ -245,18 +316,34 @@ public class FragmentMusicPlayer extends DialogFragment implements ViewPlayer, V
         }
     }
 
+    @Override
+    public AppTrack getSelectedTrack() {
+        return mTracks.get(mSelectedTrackIndex);
+    }
+
     /**
      * Updates the Views with the track / artist data
      */
     private void updateViewData() {
 
-        // Checks that we have valid information and the views are indlated
-        if (//this.mSelectedTrack != null
-                this.mSelectedArtist != null
+        // Checks that we have valid information and the views are inflated
+        if (this.mSelectedArtist != null
                 && mHeader != null) {
 
             mHeader.setmArtist(mSelectedArtist);
             mHeader.setmTrack(mTracks.get(mSelectedTrackIndex));
         }
+    }
+
+    @Override
+    public void initInPlayingMode() {
+        mState = PlayerState.PLAYING;
+        mPlayPauseButton.setImageBitmap(BitmapFactory.decodeResource(getResources(), android.R.drawable.ic_media_pause));
+    }
+
+    @Override
+    public void initInStopMode() {
+        mState = PlayerState.STOPEED;
+        mPlayPauseButton.setImageBitmap(BitmapFactory.decodeResource(getResources(),android.R.drawable.ic_media_play));
     }
 }

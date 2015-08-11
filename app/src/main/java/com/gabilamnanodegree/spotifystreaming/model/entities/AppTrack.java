@@ -16,6 +16,7 @@ import kaaes.spotify.webapi.android.models.Track;
  */
 public class AppTrack implements Parcelable {
 
+    private String mId; // Track Id
     private String mThumbUrl; // Album thumb url
     private String mTrackName; // Track name
     private String mAlbumName; // Album name
@@ -25,6 +26,7 @@ public class AppTrack implements Parcelable {
      * Constructor
      */
     public AppTrack() {
+        this.mId = "";
         this.mThumbUrl = "";
         this.mTrackName = "";
         this.mAlbumName = "";
@@ -37,6 +39,7 @@ public class AppTrack implements Parcelable {
      */
     public AppTrack(Track track) {
 
+        this.mId = track.id;
         this.mTrackName = track.name;
         this.mAlbumName = track.album.name;
         this.mPreviewUrl = track.preview_url;
@@ -60,6 +63,14 @@ public class AppTrack implements Parcelable {
      */
     public AppTrack(Parcel in){
         readFromParcel(in);
+    }
+
+    public String getmId() {
+        return mId;
+    }
+
+    public void setmId(String mId) {
+        this.mId = mId;
     }
 
     public String getmThumbUrl() {
@@ -104,6 +115,7 @@ public class AppTrack implements Parcelable {
      * @param parcel
      */
     private void readFromParcel(Parcel parcel) {
+        this.mId = parcel.readString();
         this.mThumbUrl = parcel.readString();
         this.mTrackName = parcel.readString();
         this.mAlbumName = parcel.readString();
@@ -113,6 +125,7 @@ public class AppTrack implements Parcelable {
     @Override
     public void writeToParcel(Parcel parcel, int i) {
 
+        parcel.writeString(this.mId);
         parcel.writeString(this.mThumbUrl);
         parcel.writeString(this.mTrackName);
         parcel.writeString(this.mAlbumName);

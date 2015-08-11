@@ -9,7 +9,30 @@ import com.gabilamnanodegree.spotifystreaming.ui.ViewBase;
  */
 public interface ViewPlayer extends ViewBase {
 
-    void selectTrackByIndex(int index);
+    /**
+     * Updates the song progress indicator
+     * @param progress
+     * @param totalDuration
+     * @param currentDuration
+     */
     void updateProgress(int progress, String totalDuration, String currentDuration);
+
+    /**
+     * Intilize the view in a status where the song
+     * ins playing
+     */
+    void initInPlayingMode();
+
+    /**
+     * Initialize the view in a status
+     * where the song is not playing
+     */
+    void initInStopMode();
+
+    /**
+     * Asks the view for the currently selected track
+     * @return
+     */
+    AppTrack getSelectedTrack();
 
 }

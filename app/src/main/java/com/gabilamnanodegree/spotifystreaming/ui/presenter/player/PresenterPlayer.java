@@ -12,26 +12,26 @@ import java.util.List;
  */
 public interface PresenterPlayer extends Presenter<ViewPlayer> {
 
+    /**
+     * Plays the track specified
+     * @param track
+     */
+    void playTrack(AppTrack track);
 
     /**
-     * Button Next track was clicked
+     * Stops the current track
      */
-    void nextClicked();
+    void stopCurrentTrack();
 
     /**
-     * Button Prev track was clicked
+     * Pauses the current track
      */
-    void prevClicked();
+    void pauseCurrentTrack();
 
     /**
-     * Button play was clicked
+     * Resumes the current track
      */
-    void playClicked();
-
-    /**
-     * Button pause was clicked
-     */
-    void pauseClicked();
+    void resumeCurrentTrack();
 
     /**
      * Seek progress bar was updated
@@ -42,12 +42,12 @@ public interface PresenterPlayer extends Presenter<ViewPlayer> {
     /**
      * Share Button was clicked
      */
-    void shareClicked();
+    void shareTrack(AppTrack track);
 
     /**
-     * Sets the list of tracks
-     * @param tracks
+     * Returns the current playing track - null if none
+     * @return
      */
-    void setData(List<AppTrack> tracks, int selectedIndex, AppArtist artist);
+    AppTrack getCurrentPlayingTrack();
 
 }

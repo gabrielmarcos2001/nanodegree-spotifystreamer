@@ -23,11 +23,7 @@ public class PresenterPlayerImp extends PresenterBase implements PresenterPlayer
     private boolean mServiceBound = false;
     private Intent mPlaybackServiceIntent;
 
-    private AppArtist mArtist;
     private ViewPlayer mView;
-
-    private int mCurrentTrack = 0;
-    private List<AppTrack> mTracks;
 
     //Connects to the music player service
     private ServiceConnection mMusicPlayerConnection = new ServiceConnection(){
@@ -41,7 +37,6 @@ public class PresenterPlayerImp extends PresenterBase implements PresenterPlayer
             mPlayerService = binder.getService();
 
             // Sets the current song
-            mPlayerService.setmCurrentSong(mTracks.get(mCurrentTrack));
             mPlayerService.setmInterface(PresenterPlayerImp.this);
             mServiceBound = true;
         }
@@ -69,80 +64,70 @@ public class PresenterPlayerImp extends PresenterBase implements PresenterPlayer
     }
 
     @Override
-    public void nextClicked() {
-
-        // Increments the current track index taking care
-        // of the limits
-        mCurrentTrack ++;
-        if (mCurrentTrack >= mTracks.size()) {
-            mCurrentTrack = 0;
-        }
-
-        // Plays the next song
-        mPlayerService.setmCurrentSong(mTracks.get(mCurrentTrack));
+    public void playTrack(AppTrack track) {
+        mPlayerService.setmCurrentSong(track);
         mPlayerService.playSong();
+        mView.initInPlayingMode();
+    }
 
-        if (mView != null) {
-            mView.selectTrackByIndex(mCurrentTrack);
-            //this.mView.showInfoForTrack(mTracks.get(mCurrentTrack));
-        }
+    @Override
+    public void pauseCurrentTrack() {
+        mPlayerService.pause();
+
+        if (mView != null) mView.initInStopMode();
 
     }
 
     @Override
-    public void prevClicked() {
+    public void resumeCurrentTrack() {
+        mPlayerService.resume();
 
-        // Decrements the current track index taking care
-        // of the limits
-        mCurrentTrack --;
-        if (mCurrentTrack < 0) {
-            mCurrentTrack = mTracks.size()-1;
-        }
+        if (mView != null) mView.initInPlayingMode();
+    }
 
-        // Plays the previous song
-        mPlayerService.setmCurrentSong(mTracks.get(mCurrentTrack));
-        mPlayerService.playSong();
+    @Override
+    public AppTrack getCurrentPlayingTrack() {
 
-        if (mView != null) {
-            mView.selectTrackByIndex(mCurrentTrack);
-            //this.mView.showInfoForTrack(mTracks.get(mCurrentTrack));
+        if (mPlayerService != null) {
+
+            if (mPlayerService.isPlaying()) {
+                return mPlayerService.getmCurrentSong();
+            }else {
+                return null;
+            }
+        }else {
+            return null;
         }
     }
 
     @Override
-    public void playClicked() {
-        mPlayerService.playSong();
+    public void stopCurrentTrack() {
+
+        if (mPlayerService != null) {
+            mPlayerService.stopPlayer();
+        }
     }
 
-    @Override
-    public void pauseClicked() {
-        mPlayerService.stopPlayer();
-    }
 
     @Override
     public void seekTo(int progress) {
+
         mPlayerService.seekTo(progress);
-    }
 
-    @Override
-    public void setData(List<AppTrack> tracks, int selectedIndex, AppArtist artist) {
-        this.mArtist = artist;
-        this.mTracks = tracks;
-        this.mCurrentTrack = selectedIndex;
-
-        if (mView != null) {
-            mView.selectTrackByIndex(mCurrentTrack);
-            //this.mView.showInfoForTrack(mTracks.get(mCurrentTrack));
+        if (mPlayerService.getmCurrentSong().getmId().equals(mView.getSelectedTrack().getmId())) {
+            mPlayerService.seekTo(progress);
         }
+
     }
 
+
     @Override
-    public void shareClicked() {
+    public void shareTrack(AppTrack track) {
 
         Intent shareIntent = new Intent(android.content.Intent.ACTION_SEND);
         shareIntent.setType("text/plain");
         shareIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Check out this song");
-        shareIntent.putExtra(android.content.Intent.EXTRA_TEXT, mTracks.get(mCurrentTrack).getmPreviewUrl());
+        shareIntent.putExtra(android.content.Intent.EXTRA_TEXT, track.getmPreviewUrl());
 
         Intent chooserIntent = Intent.createChooser(shareIntent, "Share With");
         chooserIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -165,8 +150,13 @@ public class PresenterPlayerImp extends PresenterBase implements PresenterPlayer
 
     @Override
     public void updateProgress(int progress, String totalDuration, String currentDuration) {
+
         if (mView != null) {
-            mView.updateProgress(progress, totalDuration, currentDuration);
+
+            // We verify that the song playing is the same in the presenter for updating the progress
+            if (mPlayerService.getmCurrentSong().getmId().equals(mView.getSelectedTrack().getmId())) {
+                mView.updateProgress(progress, totalDuration, currentDuration);
+            }
         }
     }
 
@@ -175,7 +165,23 @@ public class PresenterPlayerImp extends PresenterBase implements PresenterPlayer
         this.mView = view;
 
         if (mView != null) {
-            mView.selectTrackByIndex(mCurrentTrack);
+
+            if (mPlayerService != null) {
+
+                // The View will start in different states depending on the service current playing song
+                if (mPlayerService.getmCurrentSong().getmId().equals(mView.getSelectedTrack().getmId())) {
+                    if (mPlayerService.isPlaying()) {
+                        mView.initInPlayingMode();
+                    }else {
+                        mView.initInStopMode();
+                    }
+                }else {
+                    mView.initInStopMode();
+                }
+            }else {
+                mView.initInStopMode();
+            }
+
         }
     }
 

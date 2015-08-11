@@ -25,7 +25,7 @@
             </intent-filter>
 
         </activity>
-
+jajajaj
         <!-- Top Tracks Activity -->
         <activity
             android:name=".ui.activity.TopTracksActivity"

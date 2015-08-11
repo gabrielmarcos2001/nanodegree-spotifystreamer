@@ -36,7 +36,9 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
     private Notification mNotification;
 
     private AppTrack mCurrentSong;
+    private boolean mPlaying = false;
     private int mInitialOffset;
+    private int mPausedPosition;
 
     private final IBinder mMusicBinder = new MusicPlayerBinder();
 
@@ -99,6 +101,7 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
      */
     public void playSong() {
 
+        mPausedPosition = 0;
         mMediaPlayer.reset();
 
         try {
@@ -163,7 +166,6 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
      */
     public void seekTo(int progress) {
 
-
         if (mMediaPlayer.isPlaying()) {
 
             // If the media player is playing we update the current position
@@ -178,6 +180,13 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
         }
     }
 
+    /**
+     * Returns the current track linked to the service
+     * @return
+     */
+    public AppTrack getmCurrentSong() {
+        return mCurrentSong;
+    }
 
     private void initMusicPlayer() {
 
@@ -239,14 +248,56 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
         stopPlayer();
     }
 
+    public void getLastPosition() {
 
+        long totalDuration = mMediaPlayer.getDuration();
+        long currentPosition = mMediaPlayer.getCurrentPosition();
+
+        String workedTotalDuration = UtilsTimers.milliSecondsToTimer(totalDuration);
+        String workedCurrentDuration = UtilsTimers.milliSecondsToTimer(currentPosition);
+
+        // Updating progress bar
+        int progress = (UtilsTimers.getProgressPercentage(currentPosition, totalDuration));
+
+        if (mInterface != null) {
+            mInterface.updateProgress(progress, workedTotalDuration, workedCurrentDuration);
+        }
+    }
+
+    public boolean isPlaying() {
+
+        return mMediaPlayer.isPlaying();
+    }
+
+    /**
+     * Pauses the media player
+     */
+    public void pause() {
+        mMediaPlayer.pause();
+        mPausedPosition = mMediaPlayer.getCurrentPosition();
+    }
+
+    /**
+     * Resumes the media player
+     */
+    public void resume() {
+        mMediaPlayer.seekTo(mPausedPosition);
+        mMediaPlayer.start();
+
+        mPausedPosition = 0;
+    }
+
+    /**
+     * Stops the media player
+     */
     public void stopPlayer() {
 
         if (mMediaPlayer.isPlaying()) {
             mMediaPlayer.stop();
         }
-        mMediaPlayer.release();
 
+        mMediaPlayer.release();
+        mPausedPosition = 0;
         mWifiLock.release();
 
         stopForeground(true);
