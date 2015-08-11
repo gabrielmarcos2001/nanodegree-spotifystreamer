@@ -24,6 +24,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/header_top_tracks_height"/>
 
+
     <!-- Nice Shadow -->
     <View
         android:id="@+id/elevation_shadow"
@@ -31,6 +32,7 @@
         android:layout_height="@dimen/shadow_height"
         android:layout_below="@+id/header"
         android:background="@drawable/shadow"/>
+
 
     <!-- View Title -->
     <TextView

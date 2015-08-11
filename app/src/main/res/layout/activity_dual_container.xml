@@ -1,0 +1,69 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity"
+    android:background="@color/flat_black"
+    >
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/backround"/>
+
+    <com.gabilamnanodegree.spotifystreaming.ui.components.ViewSearchArtistHeader
+        android:id="@+id/header"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/header_search_artist_height"
+        android:layout_marginLeft="@dimen/dp72"
+        android:layout_marginRight="@dimen/dp72"/>
+
+    <RelativeLayout
+        android:id="@+id/fragments_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/header"
+        android:layout_centerHorizontal="true"
+        android:background="@color/clouds"
+        android:layout_marginLeft="@dimen/dp72"
+        android:layout_marginRight="@dimen/dp72">
+
+        <!-- Container for including the search artist fragment -->
+        <FrameLayout
+            android:id="@+id/container"
+            android:layout_width="350dp"
+            android:layout_height="match_parent"/>
+
+        <!-- Very nice divider -->
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:layout_toRightOf="@+id/container"
+            android:background="@color/purple_1000"/>
+
+        <!-- Container for including the detail fragment -->
+        <FrameLayout
+            android:id="@+id/container_2"
+            android:layout_toRightOf="@+id/container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+    </RelativeLayout>
+
+    <View
+        android:layout_width="10dp"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/header"
+        android:layout_marginLeft="@dimen/dp62"
+        android:background="@drawable/shadow_0"/>
+
+    <View
+        android:layout_width="10dp"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/header"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="@dimen/dp62"
+        android:background="@drawable/shadow_180"/>
+
+</RelativeLayout>

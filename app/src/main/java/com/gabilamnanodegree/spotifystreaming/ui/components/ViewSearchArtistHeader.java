@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.gabilamnanodegree.spotifystreaming.R;
+import com.gabilamnanodegree.spotifystreaming.ui.SpotifyStreamerApplication;
 import com.gabilamnanodegree.spotifystreaming.utils.UtilsDpi;
 
 /**
@@ -81,6 +82,10 @@ public class ViewSearchArtistHeader extends RelativeLayout implements TextWatche
 
         mImageView = (ImageView)findViewById(R.id.background);
         mOverlay = findViewById(R.id.overlay);
+
+        if (SpotifyStreamerApplication.mIsLargeLayout) {
+            mImageView.setVisibility(View.GONE);
+        }
 
         if (mArtistName != null) {
             mArtistNameEditText.setText(mArtistName);

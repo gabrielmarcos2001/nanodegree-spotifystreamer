@@ -22,6 +22,11 @@ import java.util.List;
  */
 public class PresenterSearchArtistImp extends PresenterBase implements PresenterSearchArtist, GetArtistsByName.Callback {
 
+    public interface SearchArtistInterface {
+        void artistSelected(AppArtist artist);
+    }
+
+    private SearchArtistInterface mInterface;
     private ViewSearchByArtist mView;
     private GetArtistsByName mGetArtistsByNameInteractor;
     private List<AppArtist> mResult;
@@ -55,9 +60,13 @@ public class PresenterSearchArtistImp extends PresenterBase implements Presenter
     @Override
     public void artistSelected(AppArtist artist) {
 
-        Intent i = new Intent(mContext, TopTracksActivity.class);
-        i.putExtra("artist", artist);
-        mContext.startActivity(i);
+        if (mInterface == null) {
+            Intent i = new Intent(mContext, TopTracksActivity.class);
+            i.putExtra("artist", artist);
+            mContext.startActivity(i);
+        }else {
+            mInterface.artistSelected(artist);
+        }
 
     }
 
@@ -115,4 +124,10 @@ public class PresenterSearchArtistImp extends PresenterBase implements Presenter
         this.mView.hideLoader();
         this.mView.showErrorMessage(error);
     }
+
+    @Override
+    public void setInterface(SearchArtistInterface callback) {
+        this.mInterface = callback;
+    }
+
 }

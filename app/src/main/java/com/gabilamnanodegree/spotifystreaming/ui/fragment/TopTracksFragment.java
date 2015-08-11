@@ -22,17 +22,13 @@ import android.widget.TextView;
 import com.gabilamnanodegree.spotifystreaming.R;
 import com.gabilamnanodegree.spotifystreaming.model.entities.AppArtist;
 import com.gabilamnanodegree.spotifystreaming.model.entities.AppTrack;
-import com.gabilamnanodegree.spotifystreaming.model.repository.RepositoryTracksImp;
+import com.gabilamnanodegree.spotifystreaming.ui.SpotifyStreamerApplication;
 import com.gabilamnanodegree.spotifystreaming.ui.activity.BaseActivity;
 import com.gabilamnanodegree.spotifystreaming.ui.adapter.TracksAdapter;
 import com.gabilamnanodegree.spotifystreaming.ui.components.ViewEmptyList;
-import com.gabilamnanodegree.spotifystreaming.ui.components.ViewSearchArtistHeader;
 import com.gabilamnanodegree.spotifystreaming.ui.components.ViewTopTracksHeader;
-import com.gabilamnanodegree.spotifystreaming.ui.presenter.player.PresenterPlayerImp;
 import com.gabilamnanodegree.spotifystreaming.ui.presenter.topTracks.PresenterTopTracks;
-import com.gabilamnanodegree.spotifystreaming.ui.presenter.topTracks.PresenterTopTracksImp;
 import com.gabilamnanodegree.spotifystreaming.ui.view.ViewTopTracks;
-import com.gabilamnanodegree.spotifystreaming.utils.UtilsDpi;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,7 +52,6 @@ public class TopTracksFragment extends FragmentBaseListWithHeader implements Vie
 
     private AppArtist mArtist; // Artist Data
     private TextView mTitleTextView; // Title TextView
-
 
     public static Fragment newInstance() {
         return new TopTracksFragment();
@@ -85,22 +80,34 @@ public class TopTracksFragment extends FragmentBaseListWithHeader implements Vie
         this.mListView = (ListView)rootView.findViewById(R.id.top_tracks_list_view);
         this.mRefreshLayout = (SwipeRefreshLayout)rootView.findViewById(R.id.refresh_container);
         this.mTitleTextView = (TextView)rootView.findViewById(R.id.title);
-
-        this.mAdapter = new TracksAdapter(getActivity());
-        this.mListView.setAdapter(mAdapter);
-
         this.mHeader = rootView.findViewById(R.id.header);
         this.mShadow = rootView.findViewById(R.id.elevation_shadow);
 
-        this.mHeaderHeight = getResources().getDimensionPixelSize(R.dimen.header_top_tracks_height);
-        this.mMinHeaderTranslation = getResources().getDimensionPixelSize(R.dimen.header_top_tracks_min_height);
-
-        if (mHeader instanceof ViewTopTracksHeader) {
-            ((ViewTopTracksHeader)mHeader).setmArtist(mArtist);
+        // Initialize the views depending on if we are using a tablet or a phone
+        if (SpotifyStreamerApplication.mIsLargeLayout) {
+            this.mHeaderHeight = 0;
+            this.mMinHeaderTranslation = 0;
+            this.mHeader.setVisibility(View.GONE);
+            this.mTitleTextView.setVisibility(View.GONE);
+            this.mEmptyView.hideFace();
+            this.mToolbar.setVisibility(View.GONE);
+        }else {
+            this.mHeaderHeight = getResources().getDimensionPixelSize(R.dimen.header_top_tracks_height);
+            this.mMinHeaderTranslation = getResources().getDimensionPixelSize(R.dimen.header_top_tracks_min_height);
+            this.mHeader.setVisibility(View.VISIBLE);
+            this.mTitleTextView.setVisibility(View.VISIBLE);
+            this.mToolbar.setVisibility(View.VISIBLE);
         }
 
         // Initialize the Common views once all the views are inflated and binded
         initCommonViews(inflater);
+
+        this.mAdapter = new TracksAdapter(getActivity());
+        this.mListView.setAdapter(mAdapter);
+
+        if (mHeader instanceof ViewTopTracksHeader) {
+            ((ViewTopTracksHeader)mHeader).setmArtist(mArtist);
+        }
 
         setHasOptionsMenu(true);
 
@@ -229,8 +236,11 @@ public class TopTracksFragment extends FragmentBaseListWithHeader implements Vie
 
     @Override
     public void refreshTriggered() {
-
-        if (mArtist != null) mPresenter.searchTopTracksByArtist(mArtist.getmId());
+        if (mArtist != null) {
+            mPresenter.searchTopTracksByArtist(mArtist.getmId());
+        }else {
+            hideLoader();
+        }
     }
 
     @Override
@@ -269,8 +279,13 @@ public class TopTracksFragment extends FragmentBaseListWithHeader implements Vie
 
         this.mArtist = mArtist;
 
-        if (mPresenter != null) {
+        if (mPresenter != null && mArtist != null) {
             mPresenter.searchTopTracksByArtist(mArtist.getmId());
+        }
+
+        // The artist has been refreshed
+        if (mArtist == null && mAdapter != null) {
+            mAdapter.clearTracks();
         }
     }
 

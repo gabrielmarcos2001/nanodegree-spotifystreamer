@@ -42,6 +42,8 @@ public class ViewMusicPlayerHeader extends RelativeLayout implements SeekBar.OnS
     private TextView mArtistNameTextView; // Artist Name TextView
     private TextView mAlbumNameTextView; // Album Name TextView
     private TextView mTrackNameTextView; // Track Name TextView
+    private TextView mCurrentPositionTextView; // Current position in seconds TextView
+    private TextView mTotalDurationTextView; // Total duration in seconds TextView
     private SeekBar mProgressSeekbar;
 
     private AppTrack mTrack; // Selected Track
@@ -78,6 +80,9 @@ public class ViewMusicPlayerHeader extends RelativeLayout implements SeekBar.OnS
         mAlbumImageView = (ImageView)findViewById(R.id.album_image);
         mProgressSeekbar = (SeekBar)findViewById(R.id.progress_seekbar);
 
+        mTotalDurationTextView = (TextView)findViewById(R.id.total_duration);
+        mCurrentPositionTextView = (TextView)findViewById(R.id.current_duration);
+
         mProgressSeekbar.setOnSeekBarChangeListener(this);
 
         updateViewData();
@@ -92,7 +97,7 @@ public class ViewMusicPlayerHeader extends RelativeLayout implements SeekBar.OnS
         // Sets the artist data if views are inflated
         if (mArtistNameTextView != null && mTrack != null) {
 
-            mArtistNameTextView.setText(mArtist.getmName());
+            mArtistNameTextView.setText(getContext().getString(R.string.by) + " " + mArtist.getmName());
             mAlbumNameTextView.setText(mTrack.getmAlbumName());
             mTrackNameTextView.setText(mTrack.getmTrackName());
 
@@ -157,20 +162,17 @@ public class ViewMusicPlayerHeader extends RelativeLayout implements SeekBar.OnS
         }
     }
 
-    /**
-     * Resets the seekbar progress
-     */
-    public void resetProgressSeekbar() {
-
-        if (mProgressSeekbar != null) {
-            mProgressSeekbar.setProgress(0);
-            mProgressSeekbar.setMax(1000);
-        }
-    }
-
-    public void updateProgress(int progress, String totalDuration, String currentDuration) {
+    public void updateProgress(int progress, String totalDuration, String currentPosition) {
         if (mProgressSeekbar != null) {
             mProgressSeekbar.setProgress(progress);
+        }
+
+        if (mTotalDurationTextView != null) {
+            mTotalDurationTextView.setText(totalDuration);
+        }
+
+        if (mCurrentPositionTextView != null) {
+            mCurrentPositionTextView.setText(currentPosition);
         }
     }
 }

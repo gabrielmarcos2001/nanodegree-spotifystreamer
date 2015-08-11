@@ -5,60 +5,73 @@
     android:layout_height="match_parent"
     android:background="@color/clouds">
 
-    <LinearLayout android:layout_width="match_parent"
+    <!-- Header View -->
+    <com.gabilamnanodegree.spotifystreaming.ui.components.ViewMusicPlayerHeader
+        android:id="@+id/header"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:layout_below="@+id/toolbar"
-        android:weightSum="1">
+        android:layout_above="@+id/playback_controls"
+        />
 
-        <!-- Header View -->
-        <com.gabilamnanodegree.spotifystreaming.ui.components.ViewMusicPlayerHeader
-            android:id="@+id/header"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="0.4"/>
+    <RelativeLayout
+        android:id="@+id/playback_controls"
+        android:background="@color/purple_800"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/dp10"
+        android:layout_alignParentBottom="true"
+        >
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="0.6">
+        <!-- Main Play/Pause button -->
+        <ImageButton
+            android:id="@+id/play_pause_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:paddingLeft="@dimen/dp20"
+            android:paddingRight="@dimen/dp20"
+            android:paddingTop="@dimen/dp10"
+            android:paddingBottom="@dimen/dp10"
+            android:background="@android:color/transparent"
+            android:src="@android:drawable/ic_media_play"/>
 
-            <!-- Nice Shadow -->
-            <View
-                android:id="@+id/elevation_shadow"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/shadow_height"
-                android:background="@drawable/shadow"/>
+        <!-- Next Track -->
+        <ImageButton
+            android:id="@+id/next_track"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/play_pause_button"
+            android:layout_centerVertical="true"
+            android:paddingLeft="@dimen/dp20"
+            android:paddingRight="@dimen/dp20"
+            android:paddingTop="@dimen/dp10"
+            android:paddingBottom="@dimen/dp10"
+            android:background="@android:color/transparent"
+            android:src="@android:drawable/ic_media_next"/>
 
-            <!-- Main Play/Pause button -->
-            <android.support.design.widget.FloatingActionButton
-                android:id="@+id/play_pause_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:src="@android:drawable/ic_media_play"/>
+        <!-- Prev track -->
+        <ImageButton
+            android:id="@+id/previous_track"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:paddingLeft="@dimen/dp20"
+            android:paddingRight="@dimen/dp20"
+            android:paddingTop="@dimen/dp10"
+            android:paddingBottom="@dimen/dp10"
+            android:background="@android:color/transparent"
+            android:layout_toLeftOf="@+id/play_pause_button"
+            android:src="@android:drawable/ic_media_previous"/>
 
-            <!-- Next Track -->
-            <ImageButton
-                android:id="@+id/next_track"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_toRightOf="@+id/play_pause_button"
-                android:layout_centerVertical="true"
-                android:src="@android:drawable/ic_media_next"/>
+    </RelativeLayout>
 
-            <!-- Prev track -->
-            <ImageButton
-                android:id="@+id/previous_track"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_toLeftOf="@+id/play_pause_button"
-                android:src="@android:drawable/ic_media_previous"/>
-
-        </RelativeLayout>
-
-    </LinearLayout>
+    <!-- Nice Shadow -->
+    <View
+        android:id="@+id/elevation_shadow"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/shadow_height"
+        android:layout_below="@+id/header"
+        android:background="@drawable/shadow"/>
 
 
     <!-- Custom Toolbar for displaying back navigation -->
@@ -66,7 +79,7 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
-        android:background="@color/purple_500"
+        android:background="@android:color/transparent"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         android:popupTheme="@style/ThemeOverlay.AppCompat.Dark"
         app:contentInsetLeft="0dp"

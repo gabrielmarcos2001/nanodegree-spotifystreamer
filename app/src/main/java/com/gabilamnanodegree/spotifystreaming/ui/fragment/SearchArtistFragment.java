@@ -25,6 +25,7 @@ import android.widget.ListView;
 
 import com.gabilamnanodegree.spotifystreaming.R;
 import com.gabilamnanodegree.spotifystreaming.model.entities.AppArtist;
+import com.gabilamnanodegree.spotifystreaming.ui.SpotifyStreamerApplication;
 import com.gabilamnanodegree.spotifystreaming.ui.adapter.ArtistAdapter;
 import com.gabilamnanodegree.spotifystreaming.ui.components.ViewEmptyList;
 import com.gabilamnanodegree.spotifystreaming.ui.components.ViewSearchArtistHeader;
@@ -45,7 +46,6 @@ public class SearchArtistFragment extends FragmentBaseListWithHeader implements 
 
     private String mArtistName = "";
 
-
     public static Fragment newInstance() {
         return new SearchArtistFragment();
     }
@@ -62,19 +62,26 @@ public class SearchArtistFragment extends FragmentBaseListWithHeader implements 
         this.mHeader = rootView.findViewById(R.id.header);
         this.mShadow = rootView.findViewById(R.id.elevation_shadow);
 
+        if (SpotifyStreamerApplication.mIsLargeLayout) {
+            this.mHeaderHeight = 0;
+            this.mMinHeaderTranslation = 0;
+            this.mHeader.setVisibility(View.GONE);
+        }else {
+            this.mHeader.setVisibility(View.VISIBLE);
+            this.mHeaderHeight = getResources().getDimensionPixelSize(R.dimen.header_search_artist_height);
+            this.mMinHeaderTranslation = getResources().getDimensionPixelSize(R.dimen.header_search_artist_min_height);
+        }
+
+        initCommonViews(inflater);
+
         this.mAdapter = new ArtistAdapter(getActivity());
         this.mListView.setAdapter(mAdapter);
-
-        this.mHeaderHeight = getResources().getDimensionPixelSize(R.dimen.header_search_artist_height);
-        this.mMinHeaderTranslation = getResources().getDimensionPixelSize(R.dimen.header_search_artist_min_height);
 
         // Sets the View interface to the header to get notified when the
         // artist name has changed
         if (mHeader instanceof  ViewSearchArtistHeader) {
             ((ViewSearchArtistHeader) mHeader).setmInterface(this);
         }
-
-        initCommonViews(inflater);
 
         return rootView;
     }
@@ -213,6 +220,11 @@ public class SearchArtistFragment extends FragmentBaseListWithHeader implements 
         // Notifies the presenter about an artist been selected
         if (position > 0) {
             mPresenter.artistSelected((AppArtist) mAdapter.getItem(position - 1));
+
+            if (SpotifyStreamerApplication.mIsLargeLayout) {
+                mAdapter.setmSelectedItem((position - 1));
+                mAdapter.notifyDataSetChanged();
+            }
         }
     }
 
@@ -246,4 +258,5 @@ public class SearchArtistFragment extends FragmentBaseListWithHeader implements 
             mPresenter.searchArtistByName(artistName);
         }
     }
+
 }

@@ -3,6 +3,7 @@ package com.gabilamnanodegree.spotifystreaming.ui.listItems;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -26,8 +27,10 @@ public class ListItemArtist extends RelativeLayout {
     private ImageView mArtistThumb;
     private TextView mArtistName;
     private TextView mFollowers;
+    private View mContainer;
 
     private AppArtist mData;
+    private boolean mSelected;
 
     public ListItemArtist(Context context) {
         super(context);
@@ -54,6 +57,7 @@ public class ListItemArtist extends RelativeLayout {
         this.mArtistName = (TextView)findViewById(R.id.artist_name);
         this.mArtistThumb = (ImageView)findViewById(R.id.thumb_image);
         this.mFollowers = (TextView)findViewById(R.id.followers);
+        this.mContainer = findViewById(R.id.container);
 
         // It updates the views with the item data
         updateViews();
@@ -89,6 +93,12 @@ public class ListItemArtist extends RelativeLayout {
             }else {
                 mFollowers.setText(String.valueOf(NumberFormat.getInstance().format(mData.getmFollowers()) + " " + getContext().getString(R.string.followers)));
             }
+
+            if (mSelected) {
+                mContainer.setBackgroundColor(getResources().getColor(R.color.sun_flower));
+            }else {
+                mContainer.setBackgroundColor(getResources().getColor(android.R.color.transparent));
+            }
         }
     }
 
@@ -96,9 +106,11 @@ public class ListItemArtist extends RelativeLayout {
      * Sets the Artist Data
      * @param mData
      */
-    public void setmData(AppArtist mData) {
+    public void setmData(AppArtist mData, boolean selected) {
         this.mData = mData;
+        this.mSelected = selected;
 
         updateViews();
     }
+
 }

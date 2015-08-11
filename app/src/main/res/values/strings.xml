@@ -7,6 +7,9 @@
     <string name="hint_artist_name">Artist Name</string>
     <string name="loading">LOADING</string>
     <string name="top_tracks_uppercase">TOP 10 TRACKS</string>
+    <string name="by">by</string>
+    <string name="share_song_title">Check out this song</string>
+    <string name="share_song_intent">Share With</string>
 
     <!-- Error Messages -->
     <string name="error_empty_query_artist">PLEASE ENTER AN ARTIST NAME</string>

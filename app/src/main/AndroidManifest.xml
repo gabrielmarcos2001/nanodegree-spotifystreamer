@@ -7,6 +7,7 @@
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
 
     <application
+        android:name=".ui.SpotifyStreamerApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -14,7 +15,7 @@
 
         <!-- Launcher activity -->
         <activity
-            android:name=".ui.activity.SearchArtistActivity"
+            android:name=".ui.activity.MainActivity"
             android:label="@string/app_name"
             android:windowSoftInputMode="stateHidden"
             >
@@ -25,7 +26,7 @@
             </intent-filter>
 
         </activity>
-jajajaj
+
         <!-- Top Tracks Activity -->
         <activity
             android:name=".ui.activity.TopTracksActivity"

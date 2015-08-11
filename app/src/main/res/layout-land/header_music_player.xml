@@ -4,11 +4,19 @@
     android:layout_height="match_parent"
     android:background="@color/purple_500">
 
+    <!-- Background blurred image -->
+    <ImageView
+        android:id="@+id/background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:src="@drawable/album_default"/>
+
     <!-- Album Image -->
     <ImageView
         android:id="@+id/album_image"
-        android:layout_width="@dimen/album_detail_image_size_land"
-        android:layout_height="@dimen/album_detail_image_size_land"
+        android:layout_width="@dimen/track_detail_image_size_land"
+        android:layout_height="@dimen/track_detail_image_size_land"
         android:src="@drawable/album_default"
         android:scaleType="centerCrop"
         android:layout_margin="@dimen/dp20"
@@ -19,10 +27,22 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/album_image"
         android:layout_toRightOf="@+id/album_image"
         android:layout_marginRight="@dimen/dp20"
-        android:layout_centerVertical="true"
         android:orientation="vertical">
+
+        <!-- Track Name -->
+        <TextView
+            android:id="@+id/track_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="TRACK NAME"
+            android:maxLines="2"
+            android:textColor="@color/clouds"
+            android:fontFamily="sans-serif-light"
+            android:gravity="left"
+            android:textSize="@dimen/sp30" />
 
         <TextView
             android:id="@+id/artist_name"
@@ -30,7 +50,7 @@
             android:layout_height="wrap_content"
             android:maxLines="2"
             android:textColor="@color/purple_a_200"
-            android:text="ARTIST NAME"
+            android:text="by ARTIST NAME"
             android:gravity="left" />
 
         <!-- Album Name -->
@@ -44,28 +64,39 @@
             android:text="ALBUM NAME"
             android:layout_marginBottom="@dimen/dp10"/>
 
-        <!-- Track Name -->
-        <TextView
-            android:id="@+id/track_name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="TRACK NAME"
-            android:maxLines="2"
-            android:textColor="@color/clouds"
-            android:gravity="left"
-            android:textSize="@dimen/sp20" />
-
         <!-- Seekbar -->
         <SeekBar
             android:id="@+id/progress_seekbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="@dimen/dp20"
             android:progressTint="@color/clouds"
             android:thumbTint="@color/purple_200"
             android:layout_marginTop="@dimen/dp10"
             android:progress="0"
             android:max="1000"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/current_duration"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/clouds"
+                android:paddingBottom="@dimen/dp20"
+                android:text="0:00"
+                android:textSize="@dimen/sp12" />
+
+            <TextView
+                android:id="@+id/total_duration"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/clouds"
+                android:text="0:30"
+                android:textSize="@dimen/sp12"
+                android:layout_alignParentRight="true"/>
+        </RelativeLayout>
 
     </LinearLayout>
 

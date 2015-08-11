@@ -22,6 +22,7 @@ public class ArtistAdapter extends BaseAdapter {
 
     private List<AppArtist> mAppArtists;
     private Context mContext;
+    private int mSelectedItem = -1;
 
     public ArtistAdapter(Context context) {
         this.mAppArtists = new ArrayList<>();
@@ -51,6 +52,7 @@ public class ArtistAdapter extends BaseAdapter {
      * Clears the adapter
      */
     public void clear() {
+        mSelectedItem = -1;
         mAppArtists.clear();
         notifyDataSetChanged();
     }
@@ -88,7 +90,12 @@ public class ArtistAdapter extends BaseAdapter {
         }
 
         if( holder != null ){
-            holder.mListItem.setmData(mAppArtists.get(position));
+
+            boolean selected = false;
+            if (position == mSelectedItem) {
+                selected = true;
+            }
+            holder.mListItem.setmData(mAppArtists.get(position),selected);
         }
 
         return v;
@@ -101,5 +108,9 @@ public class ArtistAdapter extends BaseAdapter {
 
         ListItemArtist mListItem;
 
+    }
+
+    public void setmSelectedItem(int mSelectedItem) {
+        this.mSelectedItem = mSelectedItem;
     }
 }

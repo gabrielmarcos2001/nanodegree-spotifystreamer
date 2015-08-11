@@ -44,16 +44,20 @@ public class RepositoryArtistImp extends RepositoryBase implements RepositoryArt
     @Override
     public List<AppArtist> get(String name) {
 
-        ArtistsPager artistsPager = mSpotify.searchArtists(name);
+        try {
+            ArtistsPager artistsPager = mSpotify.searchArtists(name);
 
-        ArrayList<AppArtist> result = new ArrayList<>();
+            ArrayList<AppArtist> result = new ArrayList<>();
 
-        List<Artist> artistsFetched =  artistsPager.artists.items;
-        for (Artist artist : artistsFetched) {
-            result.add(new AppArtist(artist));
+            List<Artist> artistsFetched =  artistsPager.artists.items;
+            for (Artist artist : artistsFetched) {
+                result.add(new AppArtist(artist));
+            }
+
+            return result;
+        }catch (Exception e) {
+            return  null;
         }
-
-        return result;
     }
 
     @Override

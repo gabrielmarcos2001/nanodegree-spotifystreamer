@@ -18,6 +18,7 @@ import android.widget.ImageButton;
 import com.gabilamnanodegree.spotifystreaming.R;
 import com.gabilamnanodegree.spotifystreaming.model.entities.AppArtist;
 import com.gabilamnanodegree.spotifystreaming.model.entities.AppTrack;
+import com.gabilamnanodegree.spotifystreaming.ui.SpotifyStreamerApplication;
 import com.gabilamnanodegree.spotifystreaming.ui.components.ViewMusicPlayerHeader;
 import com.gabilamnanodegree.spotifystreaming.ui.presenter.player.PresenterPlayer;
 import com.gabilamnanodegree.spotifystreaming.ui.presenter.player.PresenterPlayerImp;
@@ -49,11 +50,8 @@ public class FragmentMusicPlayer extends DialogFragment implements ViewPlayer, V
     private int mSelectedTrackIndex; // Current selected track index
 
     private ViewMusicPlayerHeader mHeader;
-    private boolean mMusicPlaying = false;
-    private boolean mIsLargeLayout = false;
-    private boolean mPaused = false;
 
-    private FloatingActionButton mPlayPauseButton;
+    private ImageButton mPlayPauseButton;
 
     public static FragmentMusicPlayer newInstance() {
         return new FragmentMusicPlayer();
@@ -70,7 +68,9 @@ public class FragmentMusicPlayer extends DialogFragment implements ViewPlayer, V
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (!mIsLargeLayout) {
+        if (SpotifyStreamerApplication.mIsLargeLayout) {
+            setStyle(DialogFragment.STYLE_NORMAL, R.style.Theme_AppCompat_Dialog);
+        }else {
             setStyle(DialogFragment.STYLE_NORMAL, R.style.Theme_SpotifyStreamer_NoActionBar_Dialog);
         }
     }
@@ -81,12 +81,10 @@ public class FragmentMusicPlayer extends DialogFragment implements ViewPlayer, V
 
         View rootView = inflater.inflate(R.layout.fragment_music_player, container, false);
 
-        mIsLargeLayout = getResources().getBoolean(R.bool.large_layout);
-
         mHeader = (ViewMusicPlayerHeader)rootView.findViewById(R.id.header);
         mHeader.setmInterface(this);
 
-        mPlayPauseButton = (FloatingActionButton)rootView.findViewById(R.id.play_pause_button);
+        mPlayPauseButton = (ImageButton)rootView.findViewById(R.id.play_pause_button);
         ImageButton prevButton = (ImageButton)rootView.findViewById(R.id.previous_track);
         ImageButton nextButton = (ImageButton)rootView.findViewById(R.id.next_track);
 
@@ -111,6 +109,9 @@ public class FragmentMusicPlayer extends DialogFragment implements ViewPlayer, V
             // Restores the selected track index
             mSelectedTrackIndex = savedInstanceState.getInt("trackIndex");
 
+            // Restores the state of the player
+            mState = (PlayerState)savedInstanceState.get("state");
+
             // Restores the tracks list data
             ArrayList<AppTrack> savedTracks = new ArrayList<>();
             for (Parcelable track : savedInstanceState.getParcelableArrayList("tracks")) {
@@ -119,22 +120,6 @@ public class FragmentMusicPlayer extends DialogFragment implements ViewPlayer, V
 
             mTracks = savedTracks;
 
-        }
-
-        mPresenter.setView(this);
-
-        // Checks if there is a song a song playing at moment of opening the player
-        if (mPresenter.getCurrentPlayingTrack() != null) {
-
-            // If the playing song is the same than the selected song by the user then we init the view
-            // in Playing Mode
-            if (mPresenter.getCurrentPlayingTrack().getmTrackName().equals(mTracks.get(mSelectedTrackIndex))) {
-                initInPlayingMode();
-            }else {
-                initInStopMode();
-            }
-        }else {
-            initInStopMode();
         }
 
         updateViewData();
@@ -161,6 +146,9 @@ public class FragmentMusicPlayer extends DialogFragment implements ViewPlayer, V
         // Stores the selected track index
         outState.putInt("trackIndex", mSelectedTrackIndex);
 
+        // Stores the current state of the player
+        outState.putSerializable("state", mState);
+
     }
 
     @Override
@@ -180,11 +168,8 @@ public class FragmentMusicPlayer extends DialogFragment implements ViewPlayer, V
     @Override
     public void onStop() {
             super.onStop();
-        if (mPresenter != null) {
 
-            if (mState == PlayerState.PAUSED) {
-                // Stop the song
-            }
+        if (mPresenter != null) {
             mPresenter.setView(null);
         }
     }
@@ -208,30 +193,9 @@ public class FragmentMusicPlayer extends DialogFragment implements ViewPlayer, V
     public void onClick(View view) {
 
         switch (view.getId()) {
+
             case R.id.play_pause_button:
-
-                // If the music is playing the we pause the music
-                if (mState == PlayerState.PLAYING) {
-
-                    mPresenter.pauseCurrentTrack();
-
-                    // We update the current state to Paused
-                    mState = PlayerState.PAUSED;
-
-                }else {
-
-                    // If the music is not playing we check if we are coming
-                    // from a paused state or we are playing a current song
-                    if (mState == PlayerState.PAUSED) {
-                        mPresenter.resumeCurrentTrack();
-                    }else {
-                        mPresenter.playTrack(mTracks.get(mSelectedTrackIndex));
-                    }
-
-                    // We update the current state to Playing
-                    mState = PlayerState.PLAYING;
-
-                }
+                processPlayPauseClicked();
                 break;
 
             case R.id.next_track:
@@ -249,6 +213,35 @@ public class FragmentMusicPlayer extends DialogFragment implements ViewPlayer, V
             case R.id.share_button:
                 mPresenter.shareTrack(mTracks.get(mSelectedTrackIndex));
                 break;
+        }
+    }
+
+    /**
+     * Process the Play/Pause button
+     */
+    private void processPlayPauseClicked() {
+
+        // If the music is playing the we pause the music
+        if (mState == PlayerState.PLAYING) {
+
+            mPresenter.pauseCurrentTrack();
+
+            // We update the current state to Paused
+            mState = PlayerState.PAUSED;
+
+        }else {
+
+            // If the music is not playing we check if we are coming
+            // from a paused state or we are playing a current song
+            if (mState == PlayerState.PAUSED) {
+                mPresenter.resumeCurrentTrack();
+            }else {
+                mPresenter.playTrack(mTracks.get(mSelectedTrackIndex));
+            }
+
+            // We update the current state to Playing
+            mState = PlayerState.PLAYING;
+
         }
     }
 
@@ -304,6 +297,10 @@ public class FragmentMusicPlayer extends DialogFragment implements ViewPlayer, V
         this.mTracks = mTracks;
     }
 
+    /**
+     * Sets the index of the initial track based on users selection
+     * @param mInitialTrackIndex
+     */
     public void setmInitialTrackIndex(int mInitialTrackIndex) {
         this.mSelectedTrackIndex = mInitialTrackIndex;
     }
@@ -345,5 +342,12 @@ public class FragmentMusicPlayer extends DialogFragment implements ViewPlayer, V
     public void initInStopMode() {
         mState = PlayerState.STOPEED;
         mPlayPauseButton.setImageBitmap(BitmapFactory.decodeResource(getResources(),android.R.drawable.ic_media_play));
+    }
+
+    @Override
+    public void initInPauseMode(int progress, String totalDuration, String currentDuration) {
+        mState = PlayerState.PAUSED;
+        mPlayPauseButton.setImageBitmap(BitmapFactory.decodeResource(getResources(),android.R.drawable.ic_media_play));
+        mHeader.updateProgress(progress,totalDuration,currentDuration);
     }
 }

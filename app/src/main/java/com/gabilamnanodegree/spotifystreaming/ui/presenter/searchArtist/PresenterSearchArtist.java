@@ -21,4 +21,11 @@ public interface PresenterSearchArtist extends Presenter<ViewSearchByArtist> {
      */
     void artistSelected(AppArtist artist);
 
+    /**
+     * Sets the actions interface in case we want to handle actions from
+     * outside the fragment
+     * @param callback
+     */
+    void setInterface(PresenterSearchArtistImp.SearchArtistInterface callback);
+
 }

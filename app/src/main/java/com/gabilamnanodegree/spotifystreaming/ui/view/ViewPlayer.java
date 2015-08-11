@@ -30,6 +30,12 @@ public interface ViewPlayer extends ViewBase {
     void initInStopMode();
 
     /**
+     * Initialize the view in a status
+     * where the song is paused
+     */
+    void initInPauseMode(int progress, String totalDuration, String currentDuration);
+
+    /**
      * Asks the view for the currently selected track
      * @return
      */

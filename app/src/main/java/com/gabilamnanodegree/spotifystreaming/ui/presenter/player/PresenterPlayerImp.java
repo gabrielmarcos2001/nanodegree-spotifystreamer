@@ -5,7 +5,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.IBinder;
+import android.util.Log;
 
+import com.gabilamnanodegree.spotifystreaming.R;
 import com.gabilamnanodegree.spotifystreaming.model.entities.AppArtist;
 import com.gabilamnanodegree.spotifystreaming.model.entities.AppTrack;
 import com.gabilamnanodegree.spotifystreaming.model.service.MusicPlayerService;
@@ -39,6 +41,9 @@ public class PresenterPlayerImp extends PresenterBase implements PresenterPlayer
             // Sets the current song
             mPlayerService.setmInterface(PresenterPlayerImp.this);
             mServiceBound = true;
+
+            // Once we get connected to the service we update the view state
+            if (mView != null) updateViewState();
         }
 
         @Override
@@ -73,15 +78,12 @@ public class PresenterPlayerImp extends PresenterBase implements PresenterPlayer
     @Override
     public void pauseCurrentTrack() {
         mPlayerService.pause();
-
-        if (mView != null) mView.initInStopMode();
-
+        if (mView != null) mView.initInPauseMode(mPlayerService.getmCurrentProgressPosition(), mPlayerService.getmTotalDuration(), mPlayerService.getmCurrentDuration());
     }
 
     @Override
     public void resumeCurrentTrack() {
         mPlayerService.resume();
-
         if (mView != null) mView.initInPlayingMode();
     }
 
@@ -102,7 +104,6 @@ public class PresenterPlayerImp extends PresenterBase implements PresenterPlayer
 
     @Override
     public void stopCurrentTrack() {
-
         if (mPlayerService != null) {
             mPlayerService.stopPlayer();
         }
@@ -112,10 +113,18 @@ public class PresenterPlayerImp extends PresenterBase implements PresenterPlayer
     @Override
     public void seekTo(int progress) {
 
-        mPlayerService.seekTo(progress);
+        if (mPlayerService.getmCurrentSong() == null) {
 
-        if (mPlayerService.getmCurrentSong().getmId().equals(mView.getSelectedTrack().getmId())) {
-            mPlayerService.seekTo(progress);
+            // Store the current position
+            mPlayerService.setmInitialOffset(progress);
+
+        }else {
+
+            if (mPlayerService.getmCurrentSong().getmId().equals(mView.getSelectedTrack().getmId())) {
+                mPlayerService.seekTo(progress);
+            }else {
+                mPlayerService.setmInitialOffset(progress);
+            }
         }
 
     }
@@ -126,10 +135,10 @@ public class PresenterPlayerImp extends PresenterBase implements PresenterPlayer
 
         Intent shareIntent = new Intent(android.content.Intent.ACTION_SEND);
         shareIntent.setType("text/plain");
-        shareIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Check out this song");
+        shareIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, mContext.getString(R.string.share_song_title));
         shareIntent.putExtra(android.content.Intent.EXTRA_TEXT, track.getmPreviewUrl());
 
-        Intent chooserIntent = Intent.createChooser(shareIntent, "Share With");
+        Intent chooserIntent = Intent.createChooser(shareIntent, mContext.getString(R.string.share_song_intent));
         chooserIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         mContext.startActivity(chooserIntent);
     }
@@ -165,23 +174,48 @@ public class PresenterPlayerImp extends PresenterBase implements PresenterPlayer
         this.mView = view;
 
         if (mView != null) {
+            updateViewState();
+        }
+    }
 
-            if (mPlayerService != null) {
+    /**
+     *
+     * Updates the view state depending on the
+     * player state
+     *
+     */
+    private void updateViewState() {
+
+        if (mPlayerService != null) {
+
+            if (mPlayerService.getmCurrentSong() != null) {
 
                 // The View will start in different states depending on the service current playing song
                 if (mPlayerService.getmCurrentSong().getmId().equals(mView.getSelectedTrack().getmId())) {
                     if (mPlayerService.isPlaying()) {
+                        // The song is currently playing
                         mView.initInPlayingMode();
-                    }else {
-                        mView.initInStopMode();
+                    } else {
+                        // The song is paused
+                        mView.initInPauseMode(mPlayerService.getmCurrentProgressPosition(), mPlayerService.getmTotalDuration(), mPlayerService.getmCurrentDuration());
                     }
-                }else {
+
+                } else {
+
+                    // The song in the service is not the same as in the view
                     mView.initInStopMode();
                 }
+
             }else {
+
+                // There is no song on the player
                 mView.initInStopMode();
             }
 
+        }else {
+
+            // We dont have a player service yet
+            mView.initInStopMode();
         }
     }
 

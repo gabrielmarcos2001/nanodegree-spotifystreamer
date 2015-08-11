@@ -13,7 +13,9 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.PowerManager;
 
+import com.gabilamnanodegree.spotifystreaming.R;
 import com.gabilamnanodegree.spotifystreaming.model.entities.AppTrack;
+import com.gabilamnanodegree.spotifystreaming.ui.activity.BaseActivity;
 import com.gabilamnanodegree.spotifystreaming.utils.UtilsTimers;
 
 import java.io.IOException;
@@ -28,17 +30,16 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
         MediaPlayer.OnErrorListener,
         MediaPlayer.OnCompletionListener {
 
-    public static final String ACTION_PLAY = "com.gabilamnanodegree.spotifystreaming.PLAY";
-    private static final int NOTIFICATION_ID = 999;
-
     private MediaPlayer mMediaPlayer = null;
     private WifiManager.WifiLock mWifiLock;
-    private Notification mNotification;
 
     private AppTrack mCurrentSong;
-    private boolean mPlaying = false;
     private int mInitialOffset;
     private int mPausedPosition;
+
+    private int mCurrentProgress;
+    private String mCurrentDuration;
+    private String mTotalDuration;
 
     private final IBinder mMusicBinder = new MusicPlayerBinder();
 
@@ -62,30 +63,7 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-
-        /*
-        if (intent.getAction().equals(ACTION_PLAY)) {
-
-            String songName = "song";
-
-            // assign the song name to songName
-            PendingIntent pi = PendingIntent.getActivity(getApplicationContext(), 0,
-                    new Intent(getApplicationContext(), BaseActivity.class),
-                    PendingIntent.FLAG_UPDATE_CURRENT);
-
-            mNotification = new Notification();
-            mNotification.tickerText = "";
-            mNotification.icon = R.drawable.artist_default;
-            mNotification.flags |= Notification.FLAG_ONGOING_EVENT;
-            mNotification.setLatestEventInfo(getApplicationContext(), "MusicPlayerSample",
-                    "Playing: " + songName, pi);
-
-            startForeground(NOTIFICATION_ID, mNotification);
-
-        }*/
-
         return START_STICKY;
-
     }
 
     /**
@@ -128,17 +106,18 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
             try {
 
                 if (mMediaPlayer.isPlaying()) {
+
                     long totalDuration = mMediaPlayer.getDuration();
                     long currentPosition = mMediaPlayer.getCurrentPosition();
 
-                    String workedTotalDuration = UtilsTimers.milliSecondsToTimer(totalDuration);
-                    String workedCurrentDuration = UtilsTimers.milliSecondsToTimer(currentPosition);
+                    mTotalDuration = UtilsTimers.milliSecondsToTimer(totalDuration);
+                    mCurrentDuration = UtilsTimers.milliSecondsToTimer(currentPosition);
 
                     // Updating progress bar
-                    int progress = (UtilsTimers.getProgressPercentage(currentPosition, totalDuration));
+                    mCurrentProgress = (UtilsTimers.getProgressPercentage(currentPosition, totalDuration));
 
                     if (mInterface != null) {
-                        mInterface.updateProgress(progress, workedTotalDuration, workedCurrentDuration);
+                        mInterface.updateProgress(mCurrentProgress, mTotalDuration, mCurrentDuration);
                     }
                 }
 
@@ -180,6 +159,10 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
         }
     }
 
+    public void setmInitialOffset(int mInitialOffset) {
+        this.mInitialOffset = mInitialOffset;
+    }
+
     /**
      * Returns the current track linked to the service
      * @return
@@ -188,7 +171,22 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
         return mCurrentSong;
     }
 
+    public int getmCurrentProgressPosition() {
+        return mCurrentProgress;
+    }
+
+    public String getmTotalDuration() {
+        return mTotalDuration;
+    }
+
+    public String getmCurrentDuration() {
+        return mCurrentDuration;
+    }
+
     private void initMusicPlayer() {
+
+        mInitialOffset = 0;
+        mCurrentProgress = 0;
 
         mMediaPlayer.setOnPreparedListener(this);
         mMediaPlayer.setOnErrorListener(this);
@@ -248,24 +246,7 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
         stopPlayer();
     }
 
-    public void getLastPosition() {
-
-        long totalDuration = mMediaPlayer.getDuration();
-        long currentPosition = mMediaPlayer.getCurrentPosition();
-
-        String workedTotalDuration = UtilsTimers.milliSecondsToTimer(totalDuration);
-        String workedCurrentDuration = UtilsTimers.milliSecondsToTimer(currentPosition);
-
-        // Updating progress bar
-        int progress = (UtilsTimers.getProgressPercentage(currentPosition, totalDuration));
-
-        if (mInterface != null) {
-            mInterface.updateProgress(progress, workedTotalDuration, workedCurrentDuration);
-        }
-    }
-
     public boolean isPlaying() {
-
         return mMediaPlayer.isPlaying();
     }
 
@@ -273,6 +254,9 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
      * Pauses the media player
      */
     public void pause() {
+
+        mInitialOffset = 0;
+
         mMediaPlayer.pause();
         mPausedPosition = mMediaPlayer.getCurrentPosition();
     }
@@ -281,10 +265,18 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
      * Resumes the media player
      */
     public void resume() {
-        mMediaPlayer.seekTo(mPausedPosition);
+
+        // The user could have changed the seekbar while the music was paused
+        if (mInitialOffset != 0) {
+            mMediaPlayer.seekTo(UtilsTimers.progressToTimer(mInitialOffset, mMediaPlayer.getDuration()));
+        }else {
+            mMediaPlayer.seekTo(mPausedPosition);
+        }
+
         mMediaPlayer.start();
 
         mPausedPosition = 0;
+        mInitialOffset = 0;
     }
 
     /**
@@ -297,7 +289,9 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
         }
 
         mMediaPlayer.release();
+        mCurrentProgress = 0;
         mPausedPosition = 0;
+        mInitialOffset = 0;
         mWifiLock.release();
 
         stopForeground(true);

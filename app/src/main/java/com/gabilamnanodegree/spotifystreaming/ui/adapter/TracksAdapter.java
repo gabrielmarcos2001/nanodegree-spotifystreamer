@@ -90,4 +90,16 @@ public class TracksAdapter extends BaseAdapter {
         ListItemTrack mListItem;
 
     }
+
+    /**
+     * Clears the tracks
+     */
+    public void clearTracks() {
+
+        if (mAppTracks != null) {
+            mAppTracks.clear();
+        }
+
+        notifyDataSetChanged();
+    }
 }
