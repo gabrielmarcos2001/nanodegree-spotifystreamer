@@ -7,6 +7,7 @@ import android.util.Log;
 import com.gabilamnanodegree.spotifystreaming.model.entities.AppArtist;
 import com.gabilamnanodegree.spotifystreaming.model.entities.AppTrack;
 import com.gabilamnanodegree.spotifystreaming.model.interactors.artist.GetTopTracksForArtist;
+import com.gabilamnanodegree.spotifystreaming.ui.SpotifyStreamerApplication;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -48,26 +49,30 @@ public class RepositoryTracksImp extends RepositoryBase implements RepositoryTra
     @Override
     public List<AppTrack> get(String artistId) {
 
-        Map<String,Object> parameters = new HashMap<>();
+        try {
+            Map<String, Object> parameters = new HashMap<>();
 
-        String country = Locale.getDefault().getCountry();
+            String country = Locale.getDefault().getCountry();
 
-        if (country.equals("")) {
-            country = "US";
+            if (country.equals("")) {
+                country = SpotifyStreamerApplication.DEFAULT_COUNTRY;
+            }
+
+            parameters.put("country", country);
+
+            Tracks tracks = mSpotify.getArtistTopTrack(artistId, parameters);
+
+            ArrayList<AppTrack> result = new ArrayList<>();
+
+            List<Track> tracksFetched = tracks.tracks;
+            for (Track track : tracksFetched) {
+                result.add(new AppTrack(track));
+            }
+
+            return result;
+        }catch (Exception e) {
+            return null;
         }
-
-        parameters.put("country", country);
-
-        Tracks tracks = mSpotify.getArtistTopTrack(artistId, parameters);
-
-        ArrayList<AppTrack> result = new ArrayList<>();
-
-        List<Track> tracksFetched =  tracks.tracks;
-        for (Track track : tracksFetched) {
-            result.add(new AppTrack(track));
-        }
-
-        return result;
     }
 
     @Override
@@ -79,7 +84,7 @@ public class RepositoryTracksImp extends RepositoryBase implements RepositoryTra
         String country = Locale.getDefault().getCountry();
 
         if (country.equals("")) {
-            country = "US";
+            country = SpotifyStreamerApplication.DEFAULT_COUNTRY;
         }
 
         parameters.put("country", country);

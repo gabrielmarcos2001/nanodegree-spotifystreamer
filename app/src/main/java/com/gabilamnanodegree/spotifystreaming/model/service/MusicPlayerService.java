@@ -34,6 +34,7 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
     private WifiManager.WifiLock mWifiLock;
 
     private AppTrack mCurrentSong;
+
     private int mInitialOffset;
     private int mPausedPosition;
 
@@ -90,7 +91,7 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
 
         }catch (IOException e) {
 
-            // Error setting the url
+            // TODO Error setting the url
         }
     }
 
@@ -124,7 +125,7 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
                 mHandler.postDelayed(this, 100);
 
             }catch (IllegalStateException e) {
-
+                // TODO Error getting the progress
             }
 
         }
@@ -183,6 +184,9 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
         return mCurrentDuration;
     }
 
+    /**
+     * Initialize the music player
+     */
     private void initMusicPlayer() {
 
         mInitialOffset = 0;

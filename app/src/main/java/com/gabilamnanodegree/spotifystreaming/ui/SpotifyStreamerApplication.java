@@ -10,6 +10,7 @@ import com.gabilamnanodegree.spotifystreaming.R;
 public class SpotifyStreamerApplication extends Application {
 
     public static boolean mIsLargeLayout = false;
+    public static final String DEFAULT_COUNTRY = "US"; // Sorry for this hardcode :(
 
     @Override
     public void onCreate() {
