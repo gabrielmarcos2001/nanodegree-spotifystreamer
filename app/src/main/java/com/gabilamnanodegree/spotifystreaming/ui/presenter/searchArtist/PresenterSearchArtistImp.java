@@ -2,15 +2,14 @@ package com.gabilamnanodegree.spotifystreaming.ui.presenter.searchArtist;
 
 import android.content.Context;
 import android.content.Intent;
-import android.support.v4.app.ActivityOptionsCompat;
 
+import com.gabilamnanodegree.spotifystreaming.model.cache.SPCacheImp;
 import com.gabilamnanodegree.spotifystreaming.model.entities.AppArtist;
 import com.gabilamnanodegree.spotifystreaming.model.interactors.artist.GetArtistsByName;
 import com.gabilamnanodegree.spotifystreaming.ui.activity.TopTracksActivity;
 import com.gabilamnanodegree.spotifystreaming.ui.view.ViewSearchByArtist;
 import com.gabilamnanodegree.spotifystreaming.ui.presenter.PresenterBase;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -42,7 +41,10 @@ public class PresenterSearchArtistImp extends PresenterBase implements Presenter
 
         if (mView == null) return;
 
-        if (name.equals("")) {
+        // Clears the fetched artists from the cache
+        new SPCacheImp().clearFetchedArtists();
+
+        if (name.isEmpty()) {
 
             mView.showEmptyQueryMessage();
 
@@ -59,6 +61,9 @@ public class PresenterSearchArtistImp extends PresenterBase implements Presenter
 
     @Override
     public void artistSelected(AppArtist artist) {
+
+        // Persists the selected artist
+        new SPCacheImp().setSelectedArtist(artist);
 
         if (mInterface == null) {
             Intent i = new Intent(mContext, TopTracksActivity.class);
@@ -85,6 +90,9 @@ public class PresenterSearchArtistImp extends PresenterBase implements Presenter
 
         this.mView = view;
 
+        // Recovers the result from the persistance manager
+        mResult = new SPCacheImp().getArtistsFetched();
+
         if (mView != null && mResult != null) {
 
             // Once the view is set - if we had results stored
@@ -100,6 +108,9 @@ public class PresenterSearchArtistImp extends PresenterBase implements Presenter
 
     @Override
     public void onArtistsFetched(List<AppArtist> appArtists) {
+
+        // Persists the fetched artists
+        new SPCacheImp().setArtistsFetched(appArtists);
 
         // Stores the results locally
         this.mResult = appArtists;

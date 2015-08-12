@@ -9,10 +9,9 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.gabilamnanodegree.spotifystreaming.R;
+import com.gabilamnanodegree.spotifystreaming.ui.components.FixedListView;
 import com.gabilamnanodegree.spotifystreaming.ui.components.ViewEmptyList;
 import com.gabilamnanodegree.spotifystreaming.utils.UtilsDpi;
-
-
 
 /**
  * Created by gabrielmarcos on 9/8/14.
@@ -26,7 +25,7 @@ public abstract class FragmentBaseListWithHeader extends BaseFragment implements
      */
     protected View mHeader;
     protected View mShadow;
-    protected ListView mListView;
+    protected FixedListView mListView;
     protected ViewEmptyList mEmptyView;
     protected SwipeRefreshLayout mRefreshLayout;
     protected int mLastScroll;
@@ -131,12 +130,15 @@ public abstract class FragmentBaseListWithHeader extends BaseFragment implements
 
             // We add a placeholder invisible view as a header to the listview
             View placeHolderView = inflater.inflate(R.layout.view_header_placeholder, mListView, false);
-            placeHolderView.setPadding(0,mHeaderHeight , 0, 0);
+            placeHolderView.setPadding(0, mHeaderHeight, 0, 0);
             placeHolderView.setVisibility(View.GONE);
-            mListView.addHeaderView(placeHolderView);
+            if (mListView.getHeaderViewsCount() ==0 ) {
+                mListView.addHeaderView(placeHolderView);
+            }
         }
 
         if (mRefreshLayout != null) {
+
             // Sets a refresh
             mRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
                 @Override

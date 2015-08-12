@@ -21,7 +21,7 @@ public interface PresenterPlayer extends Presenter<ViewPlayer> {
     /**
      * Stops the current track
      */
-    void stopCurrentTrack();
+    //void stopCurrentTrack();
 
     /**
      * Pauses the current track
@@ -48,6 +48,6 @@ public interface PresenterPlayer extends Presenter<ViewPlayer> {
      * Returns the current playing track - null if none
      * @return
      */
-    AppTrack getCurrentPlayingTrack();
+    //AppTrack getCurrentPlayingTrack();
 
 }

@@ -6,13 +6,10 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.DialogFragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageButton;
 
 import com.gabilamnanodegree.spotifystreaming.R;
@@ -36,7 +33,7 @@ import java.util.List;
 public class FragmentMusicPlayer extends DialogFragment implements ViewPlayer, View.OnClickListener, ViewMusicPlayerHeader.HeaderActionsInterface{
 
     private enum PlayerState {
-        STOPEED,
+        STOPPED,
         PLAYING,
         PAUSED
     }
@@ -177,9 +174,16 @@ public class FragmentMusicPlayer extends DialogFragment implements ViewPlayer, V
     @Override
     public void onDestroyView() {
             super.onDestroyView();
+
         if (mPresenter != null) {
             mPresenter.onViewDestroy();
         }
+    }
+
+    @Override
+    public void onDismiss(DialogInterface dialog) {
+        super.onDismiss(dialog);
+
     }
 
     @Override
@@ -340,7 +344,7 @@ public class FragmentMusicPlayer extends DialogFragment implements ViewPlayer, V
 
     @Override
     public void initInStopMode() {
-        mState = PlayerState.STOPEED;
+        mState = PlayerState.STOPPED;
         mPlayPauseButton.setImageBitmap(BitmapFactory.decodeResource(getResources(),android.R.drawable.ic_media_play));
     }
 

@@ -1,39 +1,27 @@
 package com.gabilamnanodegree.spotifystreaming.ui.fragment;
 
+import android.content.res.Configuration;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Parcelable;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
-import android.support.v4.util.Pair;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.SearchView;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
-import android.widget.EditText;
-import android.widget.ListView;
 
 import com.gabilamnanodegree.spotifystreaming.R;
+import com.gabilamnanodegree.spotifystreaming.model.cache.SPCacheImp;
 import com.gabilamnanodegree.spotifystreaming.model.entities.AppArtist;
 import com.gabilamnanodegree.spotifystreaming.ui.SpotifyStreamerApplication;
 import com.gabilamnanodegree.spotifystreaming.ui.adapter.ArtistAdapter;
+import com.gabilamnanodegree.spotifystreaming.ui.components.FixedListView;
 import com.gabilamnanodegree.spotifystreaming.ui.components.ViewEmptyList;
 import com.gabilamnanodegree.spotifystreaming.ui.components.ViewSearchArtistHeader;
 import com.gabilamnanodegree.spotifystreaming.ui.presenter.searchArtist.PresenterSearchArtist;
 import com.gabilamnanodegree.spotifystreaming.ui.view.ViewSearchByArtist;
-import com.gabilamnanodegree.spotifystreaming.utils.UtilsDpi;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -57,31 +45,35 @@ public class SearchArtistFragment extends FragmentBaseListWithHeader implements 
         View rootView = inflater.inflate(R.layout.fragment_search_artist, container, false);
 
         this.mEmptyView = (ViewEmptyList)rootView.findViewById(R.id.empty_view);
-        this.mListView = (ListView)rootView.findViewById(R.id.artists_list_view);
+        this.mListView = (FixedListView)rootView.findViewById(R.id.artists_list_view);
         this.mRefreshLayout = (SwipeRefreshLayout)rootView.findViewById(R.id.refresh_container);
         this.mHeader = rootView.findViewById(R.id.header);
         this.mShadow = rootView.findViewById(R.id.elevation_shadow);
 
-        if (SpotifyStreamerApplication.mIsLargeLayout) {
+        if (SpotifyStreamerApplication.mIsLargeLayout && getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+
             this.mHeaderHeight = 0;
             this.mMinHeaderTranslation = 0;
             this.mHeader.setVisibility(View.GONE);
+
         }else {
-            this.mHeader.setVisibility(View.VISIBLE);
+
             this.mHeaderHeight = getResources().getDimensionPixelSize(R.dimen.header_search_artist_height);
             this.mMinHeaderTranslation = getResources().getDimensionPixelSize(R.dimen.header_search_artist_min_height);
+            this.mHeader.setVisibility(View.VISIBLE);
+
+            // Sets the View interface to the header to get notified when the
+            // artist name has changed
+            if (mHeader instanceof  ViewSearchArtistHeader) {
+                ((ViewSearchArtistHeader) mHeader).setmInterface(this);
+            }
+
         }
 
         initCommonViews(inflater);
 
         this.mAdapter = new ArtistAdapter(getActivity());
         this.mListView.setAdapter(mAdapter);
-
-        // Sets the View interface to the header to get notified when the
-        // artist name has changed
-        if (mHeader instanceof  ViewSearchArtistHeader) {
-            ((ViewSearchArtistHeader) mHeader).setmInterface(this);
-        }
 
         return rootView;
     }
@@ -90,33 +82,9 @@ public class SearchArtistFragment extends FragmentBaseListWithHeader implements 
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        mPresenter.setView(this);
+        mArtistName = new SPCacheImp().getSearchTerms();
 
-        if (savedInstanceState != null) {
-
-            // Restores the artists name
-            mArtistName = savedInstanceState.getString("artist_name");
-
-            // Sets the artist name to the header view
-            if (mHeader instanceof  ViewSearchArtistHeader) {
-                ((ViewSearchArtistHeader) mHeader).setmArtistName(mArtistName);
-            }
-
-            // Restores the artists list data
-            ArrayList<AppArtist> savedArtists = new ArrayList<>();
-            for (Parcelable artist : savedInstanceState.getParcelableArrayList("artists")) {
-                savedArtists.add((AppArtist)artist);
-            }
-
-            mAdapter.setmAppArtists(savedArtists);
-
-            if (savedArtists.size() == 0) {
-                showEmptyListMessage();
-            }
-
-        }else {
-
-            // Initialize the View with the empty query message
+        if (mArtistName.isEmpty()) {
             showEmptyQueryMessage();
         }
 
@@ -164,30 +132,20 @@ public class SearchArtistFragment extends FragmentBaseListWithHeader implements 
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
-
-        // Stores the artist name value
-        outState.putString("artist_name", mArtistName);
-
-        // Stores the artists data list
-        ArrayList<Parcelable> parcelables = new ArrayList<>();
-        for (AppArtist artist : mAdapter.getAll()) {
-            parcelables.add(artist);
-        }
-
-        outState.putParcelableArrayList("artists", parcelables);
-
-    }
-
-    @Override
     public void showArtistsList(final List<AppArtist> appArtists) {
         mAdapter.setmAppArtists(appArtists);
     }
 
     @Override
     public void showEmptyListMessage() {
-        mEmptyView.showFace();
-        mEmptyView.setmText(getString(R.string.error_empty_list_artist));
+
+        // We want to be sure the user has input some data for showing the empty list message
+        if (mArtistName.isEmpty()) {
+            showEmptyQueryMessage();
+        }else {
+            mEmptyView.showFace();
+            mEmptyView.setmText(getString(R.string.error_empty_list_artist));
+        }
     }
 
     @Override
@@ -195,7 +153,6 @@ public class SearchArtistFragment extends FragmentBaseListWithHeader implements 
 
         mEmptyView.hideFace();
         mEmptyView.setmText(getString(R.string.error_empty_query_artist));
-        mAdapter.clear();
 
     }
 
@@ -221,7 +178,7 @@ public class SearchArtistFragment extends FragmentBaseListWithHeader implements 
         if (position > 0) {
             mPresenter.artistSelected((AppArtist) mAdapter.getItem(position - 1));
 
-            if (SpotifyStreamerApplication.mIsLargeLayout) {
+            if (SpotifyStreamerApplication.mIsLargeLayout && getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
                 mAdapter.setmSelectedItem((position - 1));
                 mAdapter.notifyDataSetChanged();
             }
@@ -250,13 +207,40 @@ public class SearchArtistFragment extends FragmentBaseListWithHeader implements 
     @Override
     public void artistNameChanged(String artistName) {
 
-        // We only perform the search if the artist name
-        // has changed
-        if (!this.mArtistName.equals(artistName)) {
+        // Since this method can be called from the main header view
+        // we want to update the inside fragment header view in order
+        // to reflect the change
+        if (mHeader instanceof ViewSearchArtistHeader) {
+            ((ViewSearchArtistHeader)mHeader).setmArtistName(artistName);
+        }
+
+        if (this.mArtistName == null) {
 
             this.mArtistName = artistName;
+
+            // We clear the selected artist
+            new SPCacheImp().clearSelectedArtist();
+
             mPresenter.searchArtistByName(artistName);
+
+        } else {
+
+            // We only perform the search if the artist name
+            // has changed
+            if (!this.mArtistName.equals(artistName)) {
+
+                this.mArtistName = artistName;
+                mAdapter.clear();
+
+                // We clear the selected artist
+                new SPCacheImp().clearSelectedArtist();
+
+                mPresenter.searchArtistByName(artistName);
+            }
         }
+
+
+
     }
 
 }

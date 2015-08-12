@@ -9,92 +9,101 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
-        android:src="@drawable/album_default"/>
+        android:src="@drawable/equilizer"/>
 
     <!-- Album Image -->
-    <ImageView
-        android:id="@+id/album_image"
-        android:layout_width="@dimen/track_detail_image_size"
-        android:layout_height="@dimen/track_detail_image_size"
-        android:src="@drawable/album_default"
-        android:scaleType="centerCrop"
-        android:layout_marginTop="@dimen/dp72"
-        android:layout_centerHorizontal="true"/>
-
-    <!-- Track Name -->
-    <TextView
-        android:id="@+id/track_name"
+    <RelativeLayout
+        android:id="@+id/data_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text=""
-        android:maxLines="2"
-        android:textColor="@color/clouds"
-        android:layout_alignLeft="@+id/album_image"
-        android:layout_alignRight="@+id/album_image"
-        android:fontFamily="sans-serif-light"
-        android:layout_below="@+id/album_image"
-        android:textSize="@dimen/sp30"
-        android:layout_marginTop="@dimen/dp20"/>
+        android:layout_centerInParent="true">
 
-    <!-- Artist Name -->
-    <TextView
-        android:id="@+id/artist_name"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:maxLines="2"
-        android:textColor="@color/purple_a_200"
-        android:text=""
-        android:layout_alignLeft="@+id/album_image"
-        android:layout_alignRight="@+id/album_image"
-        android:fontFamily="sans-serif-light"
-        android:layout_below="@+id/track_name"/>
+        <ImageView
+            android:id="@+id/album_image"
+            android:layout_width="@dimen/track_detail_image_size"
+            android:layout_height="@dimen/track_detail_image_size"
+            android:src="@drawable/album_default"
+            android:scaleType="centerCrop"
+            android:layout_marginTop="@dimen/dp72"
+            android:layout_centerHorizontal="true"/>
 
-    <!-- Album Name -->
-    <TextView
-        android:id="@+id/album_name"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:maxLines="1"
-        android:textColor="@color/clouds"
-        android:text=""
-        android:layout_alignLeft="@+id/album_image"
-        android:layout_alignRight="@+id/album_image"
-        android:fontFamily="sans-serif-light"
-        android:layout_below="@+id/artist_name"/>
+        <!-- Track Name -->
+        <TextView
+            android:id="@+id/track_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:maxLines="2"
+            android:textColor="@color/clouds"
+            android:layout_alignLeft="@+id/album_image"
+            android:layout_alignRight="@+id/album_image"
+            android:fontFamily="sans-serif-light"
+            android:layout_below="@+id/album_image"
+            android:textSize="@dimen/sp30"
+            android:layout_marginTop="@dimen/dp20"/>
 
-    <!-- Seekbar -->
-    <SeekBar
-        android:id="@+id/progress_seekbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/current_duration"
-        android:layout_alignLeft="@+id/album_image"
-        android:layout_alignRight="@+id/album_image"
-        android:progressTint="@color/clouds"
-        android:thumbTint="@color/purple_200"
-        android:progress="0"
-        android:max="1000"/>
+        <!-- Artist Name -->
+        <TextView
+            android:id="@+id/artist_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:maxLines="2"
+            android:textColor="@color/purple_a_200"
+            android:text=""
+            android:layout_alignLeft="@+id/album_image"
+            android:layout_alignRight="@+id/album_image"
+            android:fontFamily="sans-serif-light"
+            android:layout_below="@+id/track_name"/>
 
-    <TextView
-        android:id="@+id/current_duration"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@color/clouds"
-        android:layout_alignParentBottom="true"
-        android:paddingBottom="@dimen/dp20"
-        android:text="0:00"
-        android:textSize="@dimen/sp12"
-        android:layout_alignLeft="@+id/progress_seekbar"/>
+        <!-- Album Name -->
+        <TextView
+            android:id="@+id/album_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:textColor="@color/clouds"
+            android:text=""
+            android:layout_alignLeft="@+id/album_image"
+            android:layout_alignRight="@+id/album_image"
+            android:fontFamily="sans-serif-light"
+            android:layout_below="@+id/artist_name"/>
 
-    <TextView
-        android:id="@+id/total_duration"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@color/clouds"
-        android:layout_alignParentBottom="true"
-        android:paddingBottom="@dimen/dp20"
-        android:text="0:30"
-        android:textSize="@dimen/sp12"
-        android:layout_alignRight="@+id/progress_seekbar"/>
+        <!-- Seekbar -->
+        <SeekBar
+            android:id="@+id/progress_seekbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/album_name"
+            android:layout_alignLeft="@+id/album_image"
+            android:layout_alignRight="@+id/album_image"
+            android:progressTint="@color/clouds"
+            android:layout_marginTop="@dimen/dp10"
+            android:thumbTint="@color/purple_200"
+            android:progress="0"
+            android:max="1000"/>
+
+        <TextView
+            android:id="@+id/current_duration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/clouds"
+            android:layout_below="@+id/progress_seekbar"
+            android:paddingBottom="@dimen/dp20"
+            android:text="0:00"
+            android:textSize="@dimen/sp12"
+            android:layout_alignLeft="@+id/progress_seekbar"/>
+
+        <TextView
+            android:id="@+id/total_duration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/clouds"
+            android:layout_below="@+id/progress_seekbar"
+            android:paddingBottom="@dimen/dp20"
+            android:text="0:30"
+            android:textSize="@dimen/sp12"
+            android:layout_alignRight="@+id/progress_seekbar"/>
+
+    </RelativeLayout>
 
 </RelativeLayout>

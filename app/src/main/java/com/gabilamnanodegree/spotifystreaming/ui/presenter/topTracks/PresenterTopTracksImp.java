@@ -1,19 +1,12 @@
 package com.gabilamnanodegree.spotifystreaming.ui.presenter.topTracks;
 
-import android.app.Activity;
 import android.content.Context;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.DialogFragment;
-import android.view.View;
 
-import com.gabilamnanodegree.spotifystreaming.R;
+import com.gabilamnanodegree.spotifystreaming.model.cache.SPCacheImp;
 import com.gabilamnanodegree.spotifystreaming.model.entities.AppArtist;
 import com.gabilamnanodegree.spotifystreaming.model.entities.AppTrack;
 import com.gabilamnanodegree.spotifystreaming.model.interactors.artist.GetTopTracksForArtist;
-import com.gabilamnanodegree.spotifystreaming.model.repository.RepositoryTracks;
 import com.gabilamnanodegree.spotifystreaming.ui.fragment.FragmentMusicPlayer;
-import com.gabilamnanodegree.spotifystreaming.ui.presenter.player.PresenterPlayer;
-import com.gabilamnanodegree.spotifystreaming.ui.presenter.player.PresenterPlayerImp;
 import com.gabilamnanodegree.spotifystreaming.ui.view.ViewTopTracks;
 import com.gabilamnanodegree.spotifystreaming.ui.presenter.PresenterBase;
 
@@ -28,6 +21,11 @@ import java.util.List;
  */
 public class PresenterTopTracksImp extends PresenterBase implements PresenterTopTracks, GetTopTracksForArtist.Callback {
 
+    public interface TopTracksInterface {
+        void trackSelected(AppArtist artist, List<AppTrack> tracks, int position);
+    }
+
+    private TopTracksInterface mInterface;
     private ViewTopTracks mView;
     private GetTopTracksForArtist mGetTopTracksInteractor;
     private List<AppTrack> mTracks;
@@ -63,24 +61,38 @@ public class PresenterTopTracksImp extends PresenterBase implements PresenterTop
     @Override
     public void trackSelected(int position, AppArtist artist) {
 
-        FragmentMusicPlayer musicPlayerFragment = FragmentMusicPlayer.newInstance();
+        if (mInterface != null) {
 
-        // Sends the Data to the player fragment
-        musicPlayerFragment.setArtist(artist);
-        musicPlayerFragment.setmTracks(mTracks);
-        musicPlayerFragment.setmInitialTrackIndex(position);
+            mInterface.trackSelected(artist, mTracks, position);
 
-        mView.openMusicPlayer(musicPlayerFragment);
+        }else {
+
+            FragmentMusicPlayer musicPlayerFragment = FragmentMusicPlayer.newInstance();
+
+            // Sends the Data to the player fragment
+            musicPlayerFragment.setArtist(artist);
+            musicPlayerFragment.setmTracks(mTracks);
+            musicPlayerFragment.setmInitialTrackIndex(position);
+
+
+            mView.openMusicPlayer(musicPlayerFragment);
+        }
 
     }
 
     @Override
     public void setView(ViewTopTracks view) {
         this.mView = view;
+
+        mTracks = new SPCacheImp().getTracks();
+
+        if (this.mView != null && mTracks != null) this.mView.showTracksList(mTracks);
     }
 
     @Override
     public void onTopTracksFetched(List<AppTrack> appTracks) {
+
+        new SPCacheImp().setTracks(appTracks);
 
         this.mTracks = appTracks;
 
@@ -103,4 +115,10 @@ public class PresenterTopTracksImp extends PresenterBase implements PresenterTop
         this.mView.showErrorMessage(error);
         mView.hideLoader();
     }
+
+    @Override
+    public void setInterface(TopTracksInterface callback) {
+        this.mInterface = callback;
+    }
+
 }

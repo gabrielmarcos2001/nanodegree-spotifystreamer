@@ -1,5 +1,6 @@
 package com.gabilamnanodegree.spotifystreaming.ui.activity;
 
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -9,6 +10,7 @@ import com.gabilamnanodegree.spotifystreaming.R;
 import com.gabilamnanodegree.spotifystreaming.model.entities.AppArtist;
 import com.gabilamnanodegree.spotifystreaming.model.interactors.artist.GetTopTracksForArtistInteractor;
 import com.gabilamnanodegree.spotifystreaming.model.repository.RepositoryTracksImp;
+import com.gabilamnanodegree.spotifystreaming.ui.SpotifyStreamerApplication;
 import com.gabilamnanodegree.spotifystreaming.ui.fragment.TopTracksFragment;
 import com.gabilamnanodegree.spotifystreaming.ui.presenter.PresenterBase;
 import com.gabilamnanodegree.spotifystreaming.ui.presenter.topTracks.PresenterTopTracks;
@@ -66,6 +68,16 @@ public class TopTracksActivity extends BaseActivity{
         // Cleans up the presenter object
         if (isFinishing()) {
             mPresenter = null;
+        }
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+
+        // This activity should not be visible on tablet if we are in landscape mode
+        if (SpotifyStreamerApplication.mIsLargeLayout && getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
+            onBackPressed();
         }
     }
 }

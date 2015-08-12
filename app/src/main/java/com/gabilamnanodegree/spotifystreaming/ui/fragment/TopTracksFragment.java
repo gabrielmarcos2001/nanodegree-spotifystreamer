@@ -1,5 +1,6 @@
 package com.gabilamnanodegree.spotifystreaming.ui.fragment;
 
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
@@ -20,11 +21,13 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.gabilamnanodegree.spotifystreaming.R;
+import com.gabilamnanodegree.spotifystreaming.model.cache.SPCacheImp;
 import com.gabilamnanodegree.spotifystreaming.model.entities.AppArtist;
 import com.gabilamnanodegree.spotifystreaming.model.entities.AppTrack;
 import com.gabilamnanodegree.spotifystreaming.ui.SpotifyStreamerApplication;
 import com.gabilamnanodegree.spotifystreaming.ui.activity.BaseActivity;
 import com.gabilamnanodegree.spotifystreaming.ui.adapter.TracksAdapter;
+import com.gabilamnanodegree.spotifystreaming.ui.components.FixedListView;
 import com.gabilamnanodegree.spotifystreaming.ui.components.ViewEmptyList;
 import com.gabilamnanodegree.spotifystreaming.ui.components.ViewTopTracksHeader;
 import com.gabilamnanodegree.spotifystreaming.ui.presenter.topTracks.PresenterTopTracks;
@@ -51,6 +54,7 @@ public class TopTracksFragment extends FragmentBaseListWithHeader implements Vie
     private TracksAdapter mAdapter;
 
     private AppArtist mArtist; // Artist Data
+
     private TextView mTitleTextView; // Title TextView
 
     public static Fragment newInstance() {
@@ -77,14 +81,14 @@ public class TopTracksFragment extends FragmentBaseListWithHeader implements Vie
         }
 
         this.mEmptyView = (ViewEmptyList)rootView.findViewById(R.id.empty_view);
-        this.mListView = (ListView)rootView.findViewById(R.id.top_tracks_list_view);
+        this.mListView = (FixedListView)rootView.findViewById(R.id.top_tracks_list_view);
         this.mRefreshLayout = (SwipeRefreshLayout)rootView.findViewById(R.id.refresh_container);
         this.mTitleTextView = (TextView)rootView.findViewById(R.id.title);
         this.mHeader = rootView.findViewById(R.id.header);
         this.mShadow = rootView.findViewById(R.id.elevation_shadow);
 
         // Initialize the views depending on if we are using a tablet or a phone
-        if (SpotifyStreamerApplication.mIsLargeLayout) {
+        if (SpotifyStreamerApplication.mIsLargeLayout && getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
             this.mHeaderHeight = 0;
             this.mMinHeaderTranslation = 0;
             this.mHeader.setVisibility(View.GONE);
@@ -118,6 +122,8 @@ public class TopTracksFragment extends FragmentBaseListWithHeader implements Vie
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        if (mPresenter == null) return;
+
         mPresenter.setView(this);
 
         if (savedInstanceState != null) {
@@ -143,6 +149,9 @@ public class TopTracksFragment extends FragmentBaseListWithHeader implements Vie
             }
 
         }else {
+
+            // Tryes to get the selected artist from the cache system
+            mArtist = new SPCacheImp().getSelectedArtist();
 
             // If we have an artist data we search for its track
             // Only if the saved instance state is null - so we don't do
@@ -178,19 +187,25 @@ public class TopTracksFragment extends FragmentBaseListWithHeader implements Vie
     @Override
     public void onPause() {
         super.onPause();
-        mPresenter.setView(null);
+        if (mPresenter != null) {
+            mPresenter.setView(null);
+        }
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        mPresenter.setView(null);
+        if (mPresenter != null) {
+            mPresenter.setView(null);
+        }
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        mPresenter.onViewDestroy();
+        if (mPresenter != null) {
+            mPresenter.onViewDestroy();
+        }
     }
 
     @Override
@@ -269,6 +284,7 @@ public class TopTracksFragment extends FragmentBaseListWithHeader implements Vie
     @Override
     public void hideLoader() {
         mRefreshLayout.setRefreshing(false);
+        mEmptyView.setmText("");
     }
 
     /**

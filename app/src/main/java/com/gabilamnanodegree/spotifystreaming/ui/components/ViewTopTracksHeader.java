@@ -1,18 +1,11 @@
 package com.gabilamnanodegree.spotifystreaming.ui.components;
 
-import android.app.ActivityManager;
 import android.content.Context;
-import android.content.pm.ConfigurationInfo;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
-import android.os.Handler;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -170,6 +163,7 @@ public class ViewTopTracksHeader extends RelativeLayout {
      * @param mArtist
      */
     public void setmArtist(AppArtist mArtist) {
+
         this.mArtist = mArtist;
 
         updateViewData();
@@ -184,6 +178,7 @@ public class ViewTopTracksHeader extends RelativeLayout {
         // Adds the alpha effect to the overlay view
         if (mOverlay != null) {
             mAlpha += (offset*2);
+            if (mAlpha < 0) mAlpha = 0;
             mOverlay.setAlpha(mAlpha / getContext().getResources().getDimensionPixelSize(R.dimen.header_top_tracks_min_height));
         }
 

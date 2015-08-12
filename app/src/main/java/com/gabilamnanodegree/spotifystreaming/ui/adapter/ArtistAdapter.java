@@ -5,6 +5,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
+import com.gabilamnanodegree.spotifystreaming.model.cache.SPCacheImp;
 import com.gabilamnanodegree.spotifystreaming.model.entities.AppArtist;
 import com.gabilamnanodegree.spotifystreaming.ui.listItems.ListItemArtist;
 
@@ -22,7 +23,8 @@ public class ArtistAdapter extends BaseAdapter {
 
     private List<AppArtist> mAppArtists;
     private Context mContext;
-    private int mSelectedItem = -1;
+
+    private int mSelectedItem = -1; // Stores the selected position of the item in the list
 
     public ArtistAdapter(Context context) {
         this.mAppArtists = new ArrayList<>();
@@ -31,7 +33,26 @@ public class ArtistAdapter extends BaseAdapter {
 
     public void setmAppArtists(List<AppArtist> mAppArtists) {
         this.mAppArtists = mAppArtists;
+
+        // Checks if the user has a selected artist
+        AppArtist selectedArtist = new SPCacheImp().getSelectedArtist();
+
+        if (selectedArtist != null) {
+
+            mSelectedItem = -1;
+
+            // Updates the selected item index bases on the user selection
+            for (int i=0; i< mAppArtists.size(); i++) {
+                if (mAppArtists.get(i).getmId().equals(selectedArtist.getmId())) {
+                    mSelectedItem = i;
+                }
+            }
+        }else {
+            mSelectedItem = -1;
+        }
+
         notifyDataSetChanged();
+
     }
 
     @Override

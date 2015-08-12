@@ -22,4 +22,11 @@ public interface PresenterTopTracks extends Presenter<ViewTopTracks> {
      */
     void trackSelected(int position, AppArtist artist);
 
+    /**
+     * Sets the actions interface in case we want to handle actions from
+     * outside the fragment
+     * @param callback
+     */
+    void setInterface(PresenterTopTracksImp.TopTracksInterface callback);
+
 }

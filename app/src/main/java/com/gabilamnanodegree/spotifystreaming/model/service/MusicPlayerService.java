@@ -33,16 +33,16 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
     private MediaPlayer mMediaPlayer = null;
     private WifiManager.WifiLock mWifiLock;
 
-    private AppTrack mCurrentSong;
+    private AppTrack mCurrentSong; // Stores the current playing song
 
-    private int mInitialOffset;
-    private int mPausedPosition;
+    private int mInitialOffset; // Initial offset position in case the user moved the seekbar before starting playing
+    private int mPausedPosition; // Paused position for resuming the track
 
-    private int mCurrentProgress;
-    private String mCurrentDuration;
-    private String mTotalDuration;
+    private int mCurrentProgress; // Current progress in a seekbar unit
+    private String mCurrentDuration; // Current Duration String
+    private String mTotalDuration; // Total Duration string
 
-    private final IBinder mMusicBinder = new MusicPlayerBinder();
+    private final IBinder mMusicBinder = new MusicPlayerBinder(); // Binde for interacting with the service
 
     public interface MusicProgressInterface {
         void updateProgress(int progress, String totalDuration, String currentDuration);
@@ -55,7 +55,7 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
     public void onCreate() {
         super.onCreate();
 
-        mMediaPlayer = new MediaPlayer(); // initialize it here
+        mMediaPlayer = new MediaPlayer();
         mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 
         initMusicPlayer();

@@ -10,7 +10,7 @@
         android:layout_height="match_parent">
 
         <!-- ListView to display Artists Results -->
-        <ListView
+        <com.gabilamnanodegree.spotifystreaming.ui.components.FixedListView
             android:id="@+id/artists_list_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>

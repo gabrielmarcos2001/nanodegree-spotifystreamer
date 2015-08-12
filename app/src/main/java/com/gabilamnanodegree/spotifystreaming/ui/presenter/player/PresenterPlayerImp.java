@@ -87,7 +87,8 @@ public class PresenterPlayerImp extends PresenterBase implements PresenterPlayer
         if (mView != null) mView.initInPlayingMode();
     }
 
-    @Override
+    //@Override
+    /*
     public AppTrack getCurrentPlayingTrack() {
 
         if (mPlayerService != null) {
@@ -100,14 +101,15 @@ public class PresenterPlayerImp extends PresenterBase implements PresenterPlayer
         }else {
             return null;
         }
-    }
+    }*/
 
-    @Override
+    //@Override
+    /*
     public void stopCurrentTrack() {
         if (mPlayerService != null) {
             mPlayerService.stopPlayer();
         }
-    }
+    }*/
 
 
     @Override

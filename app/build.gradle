@@ -11,6 +11,18 @@ android {
         versionCode 1
         versionName "1.0"
     }
+
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/license.txt'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/notice.txt'
+        exclude 'META-INF/ASL2.0'
+    }
+
     buildTypes {
         release {
             minifyEnabled false
@@ -27,4 +39,7 @@ dependencies {
     compile 'com.squareup.retrofit:retrofit:1.9.0'  // Used to create RESTFul requests
     compile 'com.squareup.okhttp:okhttp:2.2.0'  // Used to create HTTP connections
     compile 'jp.co.cyberagent.android.gpuimage:gpuimage-library:1.2.3' // Library used to apply some cool effects to the images
+    compile 'com.fasterxml.jackson.core:jackson-databind:2.2.+' // Used for parsing objects into json
+    compile 'com.fasterxml.jackson.core:jackson-core:2.2.+'
+    compile 'com.fasterxml.jackson.core:jackson-annotations:2.2.+'
 }
