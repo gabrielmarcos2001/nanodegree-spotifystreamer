@@ -158,7 +158,7 @@ public class FragmentMusicPlayer extends DialogFragment implements ViewPlayer, V
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
         boolean autoPlay = sharedPref.getBoolean(SettingsActivity.KEY_AUTO_PLAY, true);
 
-        if (autoPlay) {
+        if (autoPlay && mState != PlayerState.PAUSED) {
             mPresenter.playTrack(mTracks.get(mSelectedTrackIndex));
         }
     }
