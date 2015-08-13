@@ -12,11 +12,36 @@ import java.util.List;
  */
 public interface ViewSearchByArtist extends ViewBase {
 
+    /**
+     * Displays a list of artists
+     * @param appArtists
+     */
     void showArtistsList(List<AppArtist> appArtists);
+
+    /**
+     * Displays a message for empty results
+     */
     void showEmptyListMessage();
+
+    /**
+     * Displays a message for empty query
+     */
     void showEmptyQueryMessage();
+
+    /**
+     * Displays a standar error message
+     * @param error
+     */
     void showErrorMessage(String error);
+
+    /**
+     * Displays a loader
+     */
     void showLoader();
+
+    /**
+     * Hides the loader
+     */
     void hideLoader();
 
 }

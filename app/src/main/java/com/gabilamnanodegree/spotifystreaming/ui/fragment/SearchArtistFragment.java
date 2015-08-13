@@ -1,5 +1,6 @@
 package com.gabilamnanodegree.spotifystreaming.ui.fragment;
 
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -15,6 +16,7 @@ import com.gabilamnanodegree.spotifystreaming.R;
 import com.gabilamnanodegree.spotifystreaming.model.cache.SPCacheImp;
 import com.gabilamnanodegree.spotifystreaming.model.entities.AppArtist;
 import com.gabilamnanodegree.spotifystreaming.ui.SpotifyStreamerApplication;
+import com.gabilamnanodegree.spotifystreaming.ui.activity.SettingsActivity;
 import com.gabilamnanodegree.spotifystreaming.ui.adapter.ArtistAdapter;
 import com.gabilamnanodegree.spotifystreaming.ui.components.FixedListView;
 import com.gabilamnanodegree.spotifystreaming.ui.components.ViewEmptyList;
@@ -68,6 +70,16 @@ public class SearchArtistFragment extends FragmentBaseListWithHeader implements 
                 ((ViewSearchArtistHeader) mHeader).setmInterface(this);
             }
 
+        }
+
+        View settingsButton = mHeader.findViewById(R.id.settings);
+        if (settingsButton != null) {
+            settingsButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    openSettingsActivity();
+                }
+            });
         }
 
         initCommonViews(inflater);
@@ -239,8 +251,15 @@ public class SearchArtistFragment extends FragmentBaseListWithHeader implements 
             }
         }
 
+    }
 
+    /**
+     * Opens the settings activity
+     */
+    private void openSettingsActivity() {
 
+        Intent i = new Intent(getActivity(), SettingsActivity.class);
+        startActivity(i);
     }
 
 }

@@ -10,6 +10,8 @@
     <string name="by">by</string>
     <string name="share_song_title">Check out this song</string>
     <string name="share_song_intent">Share With</string>
+    <string name="auto_play">Auto Play</string>
+    <string name="auto_play_summary">Auto Play a song when selected</string>
 
     <!-- Error Messages -->
     <string name="error_empty_query_artist">PLEASE ENTER AN ARTIST NAME</string>

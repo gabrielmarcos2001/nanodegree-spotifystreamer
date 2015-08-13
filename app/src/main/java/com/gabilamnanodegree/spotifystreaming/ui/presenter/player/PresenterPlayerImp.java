@@ -4,13 +4,16 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.os.IBinder;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.gabilamnanodegree.spotifystreaming.R;
 import com.gabilamnanodegree.spotifystreaming.model.entities.AppArtist;
 import com.gabilamnanodegree.spotifystreaming.model.entities.AppTrack;
 import com.gabilamnanodegree.spotifystreaming.model.service.MusicPlayerService;
+import com.gabilamnanodegree.spotifystreaming.ui.activity.SettingsActivity;
 import com.gabilamnanodegree.spotifystreaming.ui.presenter.PresenterBase;
 import com.gabilamnanodegree.spotifystreaming.ui.view.ViewPlayer;
 
@@ -43,7 +46,23 @@ public class PresenterPlayerImp extends PresenterBase implements PresenterPlayer
             mServiceBound = true;
 
             // Once we get connected to the service we update the view state
-            if (mView != null) updateViewState();
+            if (mView != null) {
+
+                // Checks for the auto - play feature
+                SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mContext);
+                boolean autoPlay = sharedPref.getBoolean(SettingsActivity.KEY_AUTO_PLAY, true);
+
+                if (autoPlay) {
+
+                    // Auto Plays the track
+                    playTrack(mView.getSelectedTrack());
+                    mView.initInPlayingMode();
+
+                }else {
+
+                    updateViewState();
+                }
+            }
         }
 
         @Override
@@ -70,9 +89,41 @@ public class PresenterPlayerImp extends PresenterBase implements PresenterPlayer
 
     @Override
     public void playTrack(AppTrack track) {
-        mPlayerService.setmCurrentSong(track);
-        mPlayerService.playSong();
-        mView.initInPlayingMode();
+
+        // Checks that we have a reference to the player service
+        if (mPlayerService != null) {
+
+            // Checks if there is already a current song in the service
+            if (mPlayerService.getmCurrentSong() != null) {
+
+                // Checks if the song is already playing
+                if (mPlayerService.isPlaying()) {
+
+                    // If the new song to play is different than the playing song, then we tell
+                    // the player to play the new song
+                    if (!mPlayerService.getmCurrentSong().getmId().equals(track.getmId())) {
+                        mPlayerService.setmCurrentSong(track);
+                        mPlayerService.playSong();
+                    }
+
+                }else {
+
+                    // If there is no song playing on the player, then we play the new song
+                    mPlayerService.setmCurrentSong(track);
+                    mPlayerService.playSong();
+
+                }
+
+            }else {
+
+                // Ig there id no song set to the player, then we set the new song and play it
+                mPlayerService.setmCurrentSong(track);
+                mPlayerService.playSong();
+
+            }
+
+            if (mView != null) mView.initInPlayingMode();
+        }
     }
 
     @Override
@@ -86,30 +137,6 @@ public class PresenterPlayerImp extends PresenterBase implements PresenterPlayer
         mPlayerService.resume();
         if (mView != null) mView.initInPlayingMode();
     }
-
-    //@Override
-    /*
-    public AppTrack getCurrentPlayingTrack() {
-
-        if (mPlayerService != null) {
-
-            if (mPlayerService.isPlaying()) {
-                return mPlayerService.getmCurrentSong();
-            }else {
-                return null;
-            }
-        }else {
-            return null;
-        }
-    }*/
-
-    //@Override
-    /*
-    public void stopCurrentTrack() {
-        if (mPlayerService != null) {
-            mPlayerService.stopPlayer();
-        }
-    }*/
 
 
     @Override
@@ -180,6 +207,22 @@ public class PresenterPlayerImp extends PresenterBase implements PresenterPlayer
         }
     }
 
+    @Override
+    public void trackFinished() {
+
+        if (mView != null) {
+            mView.initInStopMode();
+        }
+    }
+
+    @Override
+    public void trackStartedPlaying() {
+
+        if (mView != null) {
+            mView.initInPlayingMode();
+        }
+    }
+
     /**
      *
      * Updates the view state depending on the
@@ -194,6 +237,7 @@ public class PresenterPlayerImp extends PresenterBase implements PresenterPlayer
 
                 // The View will start in different states depending on the service current playing song
                 if (mPlayerService.getmCurrentSong().getmId().equals(mView.getSelectedTrack().getmId())) {
+
                     if (mPlayerService.isPlaying()) {
                         // The song is currently playing
                         mView.initInPlayingMode();

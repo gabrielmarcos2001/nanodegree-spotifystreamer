@@ -12,10 +12,36 @@ import java.util.List;
  */
 public interface ViewTopTracks extends ViewBase {
 
+    /**
+     * Displays a list of tracks
+     * @param appTracks
+     */
     void showTracksList(List<AppTrack> appTracks);
+
+    /**
+     * Displays a message for no results
+     */
     void showEmptyListMessage();
+
+    /**
+     * Displays a standard error message
+     * @param error
+     */
     void showErrorMessage(String error);
+
+    /**
+     * Shows a loader
+     */
     void showLoader();
+
+    /**
+     * Hides the loader
+     */
     void hideLoader();
+
+    /**
+     * Opens the music player
+     * @param fragment
+     */
     void openMusicPlayer(DialogFragment fragment);
 }

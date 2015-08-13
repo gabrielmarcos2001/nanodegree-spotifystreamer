@@ -46,6 +46,8 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
 
     public interface MusicProgressInterface {
         void updateProgress(int progress, String totalDuration, String currentDuration);
+        void trackStartedPlaying();
+        void trackFinished();
     }
 
     private MusicProgressInterface mInterface;
@@ -217,6 +219,8 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
     @Override
     public void onPrepared(MediaPlayer mediaPlayer) {
 
+        if (mInterface != null) mInterface.trackStartedPlaying();
+
         if (mInitialOffset != 0) {
             mediaPlayer.seekTo(UtilsTimers.progressToTimer(mInitialOffset, mMediaPlayer.getDuration()));
         }
@@ -242,7 +246,9 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
 
     @Override
     public void onCompletion(MediaPlayer mediaPlayer) {
-
+        if  (mInterface != null) {
+            mInterface.trackFinished();
+        }
     }
 
     @Override

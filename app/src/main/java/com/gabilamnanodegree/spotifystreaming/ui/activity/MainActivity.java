@@ -1,9 +1,11 @@
 package com.gabilamnanodegree.spotifystreaming.ui.activity;
 
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 import android.os.Bundle;
+import android.view.View;
 
 import com.gabilamnanodegree.spotifystreaming.R;
 import com.gabilamnanodegree.spotifystreaming.model.cache.SPCacheImp;
@@ -128,6 +130,16 @@ public class MainActivity extends BaseActivity {
             // Gets a reference to the header view
             mHeader = (ViewMainHeader)findViewById(R.id.header);
 
+            View settingsButton = mHeader.findViewById(R.id.settings);
+            if (settingsButton != null) {
+                settingsButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        openSettingsActivity();
+                    }
+                });
+            }
+
             mSearchArtistPresenter.setInterface(new PresenterSearchArtistImp.SearchArtistInterface() {
 
                 @Override
@@ -217,6 +229,17 @@ public class MainActivity extends BaseActivity {
             }
         }
 
+
+
+    }
+
+    /**
+     * Opens the settings activity
+     */
+    private void openSettingsActivity() {
+
+        Intent i = new Intent(this, SettingsActivity.class);
+        startActivity(i);
     }
 
     @Override

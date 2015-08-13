@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <CheckBoxPreference
+        android:key="pref_auto_play"
+        android:title="@string/auto_play"
+        android:summary="@string/auto_play_summary"
+        android:defaultValue="true" />
+
+</PreferenceScreen>

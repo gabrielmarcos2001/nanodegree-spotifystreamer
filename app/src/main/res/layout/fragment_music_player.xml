@@ -32,6 +32,7 @@
             android:paddingRight="@dimen/dp20"
             android:paddingTop="@dimen/dp10"
             android:paddingBottom="@dimen/dp10"
+            style="?android:actionButtonStyle"
             android:background="@android:color/transparent"
             android:src="@android:drawable/ic_media_play"/>
 
@@ -46,6 +47,7 @@
             android:paddingRight="@dimen/dp20"
             android:paddingTop="@dimen/dp10"
             android:paddingBottom="@dimen/dp10"
+            style="?android:actionButtonStyle"
             android:background="@android:color/transparent"
             android:src="@android:drawable/ic_media_next"/>
 
@@ -59,6 +61,7 @@
             android:paddingRight="@dimen/dp20"
             android:paddingTop="@dimen/dp10"
             android:paddingBottom="@dimen/dp10"
+            style="?android:actionButtonStyle"
             android:background="@android:color/transparent"
             android:layout_toLeftOf="@+id/play_pause_button"
             android:src="@android:drawable/ic_media_previous"/>

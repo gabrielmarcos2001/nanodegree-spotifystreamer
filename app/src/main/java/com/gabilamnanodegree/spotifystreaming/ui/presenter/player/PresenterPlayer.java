@@ -19,11 +19,6 @@ public interface PresenterPlayer extends Presenter<ViewPlayer> {
     void playTrack(AppTrack track);
 
     /**
-     * Stops the current track
-     */
-    //void stopCurrentTrack();
-
-    /**
      * Pauses the current track
      */
     void pauseCurrentTrack();
@@ -43,11 +38,5 @@ public interface PresenterPlayer extends Presenter<ViewPlayer> {
      * Share Button was clicked
      */
     void shareTrack(AppTrack track);
-
-    /**
-     * Returns the current playing track - null if none
-     * @return
-     */
-    //AppTrack getCurrentPlayingTrack();
 
 }

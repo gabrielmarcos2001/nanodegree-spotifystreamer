@@ -39,4 +39,13 @@
 
     </android.support.design.widget.TextInputLayout>
 
+    <ImageButton
+        android:id="@+id/settings"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="?android:actionButtonStyle"
+        android:layout_alignParentRight="true"
+        android:background="@android:color/transparent"
+        android:src="@android:drawable/ic_menu_more"/>
+
 </RelativeLayout>

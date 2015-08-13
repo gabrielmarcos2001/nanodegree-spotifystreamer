@@ -2,9 +2,11 @@ package com.gabilamnanodegree.spotifystreaming.ui.fragment;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
@@ -16,6 +18,7 @@ import com.gabilamnanodegree.spotifystreaming.R;
 import com.gabilamnanodegree.spotifystreaming.model.entities.AppArtist;
 import com.gabilamnanodegree.spotifystreaming.model.entities.AppTrack;
 import com.gabilamnanodegree.spotifystreaming.ui.SpotifyStreamerApplication;
+import com.gabilamnanodegree.spotifystreaming.ui.activity.SettingsActivity;
 import com.gabilamnanodegree.spotifystreaming.ui.components.ViewMusicPlayerHeader;
 import com.gabilamnanodegree.spotifystreaming.ui.presenter.player.PresenterPlayer;
 import com.gabilamnanodegree.spotifystreaming.ui.presenter.player.PresenterPlayerImp;
@@ -121,8 +124,6 @@ public class FragmentMusicPlayer extends DialogFragment implements ViewPlayer, V
 
         updateViewData();
 
-        setStyle(DialogFragment.STYLE_NORMAL, R.style.Theme_SpotifyStreamer_NoActionBar_Dialog);
-
         return rootView;
     }
 
@@ -152,6 +153,14 @@ public class FragmentMusicPlayer extends DialogFragment implements ViewPlayer, V
     public void onResume() {
         super.onResume();
         mPresenter.setView(this);
+
+        // Checks for the auto - play feature
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        boolean autoPlay = sharedPref.getBoolean(SettingsActivity.KEY_AUTO_PLAY, true);
+
+        if (autoPlay) {
+            mPresenter.playTrack(mTracks.get(mSelectedTrackIndex));
+        }
     }
 
     @Override
@@ -333,6 +342,7 @@ public class FragmentMusicPlayer extends DialogFragment implements ViewPlayer, V
 
             mHeader.setmArtist(mSelectedArtist);
             mHeader.setmTrack(mTracks.get(mSelectedTrackIndex));
+            mHeader.updateProgress(0,"0:30","0:00");
         }
     }
 
